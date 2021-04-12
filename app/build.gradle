@@ -1,0 +1,116 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+//apply plugin: 'de.mannodermaus.android-junit5'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'androidx.navigation.safeargs'
+
+android {
+    compileSdkVersion Versions.compileSdkVersion
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.elenaneacsu.disertatieapp"
+        minSdkVersion Versions.minSdkVersion
+        targetSdkVersion Versions.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation Deps.kotlinStdLib
+
+    // AndroidX
+
+    implementation Deps.androidxAppCompat
+    implementation Deps.androidxCardView
+    implementation Deps.androidxCore
+    implementation Deps.androidxConstraintLayout
+    implementation Deps.androidxCoordinatorLayout
+    implementation Deps.androidxRecyclerView
+    implementation Deps.androidxSwipeRefreshLayout
+
+    // Dagger
+
+    implementation Deps.daggerRuntime
+    implementation Deps.daggerAndroid
+    implementation Deps.daggerAndroidSupport
+    implementation Deps.daggerCompiler
+    implementation Deps.daggerSupportCompiler
+
+    // Google
+
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+
+    // Lifecycle
+
+    implementation Deps.lifecycleRuntime
+    implementation Deps.lifecycleJava8
+    implementation Deps.lifecycleCompiler
+    implementation Deps.lifecycleRuntimeKtx
+    implementation Deps.lifecycleViewmodelKtx
+    implementation Deps.lifecycleLivedataKtx
+
+    implementation Deps.material
+    implementation Deps.multidex
+
+    // Navigation
+
+    implementation Deps.navigationRuntime
+    implementation Deps.navigationRuntimeKtx
+    implementation Deps.navigationFragment
+    implementation Deps.navigationFragmentKtx
+    implementation Deps.navigationDynamicFeaturesFragment
+    implementation Deps.navigationTesting
+    implementation Deps.navigationUi
+    implementation Deps.navigationUiKtx
+    implementation Deps.navigationSafeArgsPlugin
+
+    // OkHttp
+
+    implementation Deps.okhttp
+    implementation Deps.okhttpLoggingInterceptor
+
+    // Retrofit
+
+    implementation Deps.retrofitRuntime
+    implementation Deps.retrofitGson
+    implementation Deps.retrofitConverterScalars
+    implementation Deps.retrofitMock
+
+    // Room
+
+    implementation Deps.roomRuntime
+    implementation Deps.roomCompiler
+    implementation Deps.roomKtx
+    implementation Deps.roomTesting
+
+    testImplementation Deps.junit
+
+    androidTestImplementation Deps.junitTest
+    androidTestImplementation Deps.espressoTest
+}

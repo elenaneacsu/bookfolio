@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "584454556678",
+    "project_id": "bookfolio-221ca",
+    "storage_bucket": "bookfolio-221ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584454556678:android:443676c7c2bf415974c787",
+        "android_client_info": {
+          "package_name": "com.elenaneacsu.bookfolio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584454556678-igq7oogbdkhrl4r6ch2fbbc7guf2uefs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPffSgBzBbwT44C6rpvyTEHeRBcAJJAqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584454556678-igq7oogbdkhrl4r6ch2fbbc7guf2uefs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

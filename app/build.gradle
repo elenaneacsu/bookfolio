@@ -1,11 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-//apply plugin: 'de.mannodermaus.android-junit5'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
-//apply plugin: 'com.google.gms.google-services'
 apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion Versions.compileSdkVersion
@@ -34,15 +33,18 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    dataBinding {
+        enabled = true
+    }
+    packagingOptions {
+        exclude 'META-INF/gradle/incremental.annotation.processors'
+    }
 }
 
 dependencies {
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
-    implementation Deps.kotlinStdLib
 
     // AndroidX
 
@@ -54,17 +56,14 @@ dependencies {
     implementation Deps.androidxRecyclerView
     implementation Deps.androidxSwipeRefreshLayout
 
-    // Dagger
-
-    implementation Deps.daggerRuntime
-    implementation Deps.daggerAndroid
-    implementation Deps.daggerAndroidSupport
-    implementation Deps.daggerCompiler
-    implementation Deps.daggerSupportCompiler
-
     // Google
 
     implementation platform('com.google.firebase:firebase-bom:26.8.0')
+
+    // Hilt
+
+    implementation "com.google.dagger:hilt-android:2.35"
+    kapt "com.google.dagger:hilt-compiler:2.35"
 
     // Lifecycle
 
@@ -88,7 +87,6 @@ dependencies {
     implementation Deps.navigationTesting
     implementation Deps.navigationUi
     implementation Deps.navigationUiKtx
-    implementation Deps.navigationSafeArgsPlugin
 
     // OkHttp
 

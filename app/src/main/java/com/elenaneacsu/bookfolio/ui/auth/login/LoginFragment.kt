@@ -1,11 +1,12 @@
-package com.elenaneacsu.bookfolio.login
+package com.elenaneacsu.bookfolio.ui.auth.login
 
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentLoginBinding
 import com.elenaneacsu.bookfolio.extensions.logDebug
 import com.elenaneacsu.bookfolio.extensions.toast
-import dagger.hilt.android.AndroidEntryPoint
+import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFragment : BaseMvvmFragment<LoginViewModel, FragmentLoginBinding>(
@@ -25,14 +26,15 @@ class LoginFragment : BaseMvvmFragment<LoginViewModel, FragmentLoginBinding>(
 //                findNavController().navigate(LoginFragmentDirections.actionNavigationLoginToNavigationRegister())
 //            }
 //        }
-//        viewBinding.buttonLogin.setOnOneOffClickListener {
-//            viewModel.login()
-//        }
+        viewBinding.login.setOnOneOffClickListener {
+            viewModel.login()
+        }
     }
 
     override fun initObservers() {
         super.initObservers()
-//        viewModel.loginResult.observe(viewLifecycleOwner, {
+        viewModel.loginResult.observe(viewLifecycleOwner, {
+            toast(it)
 //            when (it.status) {
 //                Result.Status.LOADING -> showProgress()
 //                Result.Status.SUCCESS -> {
@@ -44,7 +46,7 @@ class LoginFragment : BaseMvvmFragment<LoginViewModel, FragmentLoginBinding>(
 //                    errorAlert(it.message ?: getString(R.string.default_error_message))
 //                }
 //            }
-//        })
+        })
     }
 
     override fun hideProgress() {

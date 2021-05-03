@@ -1,10 +1,14 @@
-package com.elenaneacsu.bookfolio.login
+package com.elenaneacsu.bookfolio.ui.auth.login
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import dagger.hilt.android.lifecycle.HiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.vm.BaseViewModel
 import com.elenaneacsu.bookfolio.vm.CoroutineContextProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -17,13 +21,23 @@ class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : BaseViewModel(resourceString, coroutineContextProvider) {
 
-    val email = MutableLiveData("cristian.grigore@roweb.ro")
+    val email = MutableLiveData("test@test.com")
     val password = MutableLiveData("123456")
 
-//    private val _loginResult = MutableLiveData<Result<TokenAndUserResponseModel>>()
-//    val loginResult: LiveData<Result<TokenAndUserResponseModel>>
-//        get() = _loginResult
-//
+    private val _loginResult = MutableLiveData<String>()
+    val loginResult: LiveData<String>
+        get() = _loginResult
+
+    fun login() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val response = loginRepository.login(email.value!!, password.value!!)
+            _loginResult.postValue(response?.user?.email ?: "empty")
+        } catch (e: Exception) {
+            _loginResult.postValue("error")
+        }
+
+    }
+
 //    fun login() = makeRequest(resourceString, ioContext, _loginResult) {
 //        val loginRequestModel = LoginRequestModel()
 //

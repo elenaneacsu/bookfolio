@@ -1,4 +1,4 @@
-package com.elenaneacsu.bookfolio.vm
+package com.elenaneacsu.bookfolio.viewmodel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

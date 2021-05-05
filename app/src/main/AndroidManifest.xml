@@ -13,7 +13,10 @@
         android:supportsRtl="true"
         android:name=".app.BookfolioApplication"
         android:theme="@style/Theme.Bookfolio">
-        <activity android:name=".ui.auth.AuthActivity">
+        <activity
+            android:name=".ui.auth.AuthActivity"
+            android:theme="@style/Theme.Bookfolio.Login"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

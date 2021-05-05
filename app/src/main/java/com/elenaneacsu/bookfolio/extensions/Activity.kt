@@ -3,9 +3,12 @@ package com.elenaneacsu.bookfolio.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -16,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+
 
 /**
  * show toast method
@@ -188,6 +192,22 @@ fun <T> FragmentActivity.startActivityWithFlags(`class`: Class<T>) {
 fun <T> AppCompatActivity.startActivity(`class`: Class<T>) {
     val intent = Intent(this, `class`)
     startActivity(intent)
+}
+
+/**
+ * Change the colour of the status bar
+ */
+fun AppCompatActivity.updateStatusBarColor(color: Int?, isStatusBarLight: Boolean) {
+    val window: Window = window
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    color?.let { window.statusBarColor = this.resources.getColor(it) }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val view = getWindow().decorView
+        view.systemUiVisibility = if (isStatusBarLight)
+            view.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        else
+            view.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+    }
 }
 
 fun AppCompatActivity.logDebug(msg: String?) {

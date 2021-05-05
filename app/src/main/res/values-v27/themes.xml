@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Bookfolio.Login">
+        <item name="android:windowBackground">@color/white_grey</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/white_grey</item>
+        <item name="android:navigationBarColor">@color/white_grey</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>

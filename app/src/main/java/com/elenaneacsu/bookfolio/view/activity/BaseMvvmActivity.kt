@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
-import com.elenaneacsu.bookfolio.vm.BaseViewModel
+import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 
 abstract class BaseMvvmActivity<VM : BaseViewModel, VB : ViewDataBinding>(
     @LayoutRes private val contentLayoutId: Int,

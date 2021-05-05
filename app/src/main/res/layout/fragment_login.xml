@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:padding="16dp">
+        android:padding="@dimen/medium_padding">
 
         <ImageView
             android:id="@+id/books_icon"
@@ -37,16 +37,16 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="@dimen/small_padding">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/parent_layout_email"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
+                    android:hint="@string/email"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -57,7 +57,7 @@
                         android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
                         android:lines="1"
-                        android:paddingEnd="12dp"
+                        android:paddingEnd="@dimen/icon_end_padding"
                         android:text="@={viewModel.email}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -67,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white_grey"
-                    android:hint="Password"
+                    android:hint="@string/password"
                     app:errorEnabled="true"
                     app:passwordToggleEnabled="true">
 
@@ -86,15 +86,15 @@
                     style="@style/RoundedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Login" />
+                    android:text="@string/login" />
 
                 <TextView
                     android:id="@+id/goToSignUp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:padding="16dp"
-                    android:text="Don't have an account? Click here to create one" />
+                    android:padding="@dimen/medium_padding"
+                    android:text="@string/create_account_redirect" />
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

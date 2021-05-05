@@ -26,8 +26,12 @@ class SignupFragment : BaseMvvmFragment<LoginViewModel, FragmentSignupBinding>(
     ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         val toolbar = viewBinding.toolbar
-        (activity as? AuthActivity)?.setSupportActionBar(toolbar)
-        (activity as? AuthActivity)?.updateStatusBarColor(R.color.primary, false)
+
+        (activity as? AuthActivity)?.apply {
+            setSupportActionBar(toolbar)
+            updateStatusBarColor(R.color.primary, false)
+        }
+
         return view
     }
 

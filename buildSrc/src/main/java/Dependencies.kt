@@ -18,7 +18,7 @@ object Versions {
     const val fragment = "1.3.0"
     const val googleServices = "4.3.5"
     const val lifecycle = "2.3.0"
-    const val material = "1.3.0"
+    const val material = "1.4.0-alpha01"
     const val multidex = "2.0.1"
     const val navigation = "2.3.4"
     const val okHttpLogginInterceptor = "4.9.0"

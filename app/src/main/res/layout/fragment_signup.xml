@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="com.elenaneacsu.bookfolio.ui.auth.login.LoginViewModel" />
+        <import type="com.elenaneacsu.bookfolio.ui.auth.AuthViewModel" />
 
         <variable
             name="viewModel"
-            type="LoginViewModel" />
+            type="com.elenaneacsu.bookfolio.ui.auth.AuthViewModel" />
 
     </data>
 
@@ -40,6 +40,17 @@
                 app:theme="@style/Toolbar"
                 app:title="@string/register_account_toolbar" />
         </com.google.android.material.appbar.AppBarLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -114,7 +125,7 @@
                         android:inputType="textPassword"
                         android:lines="1"
                         android:paddingEnd="@dimen/icon_end_padding"
-                        android:text="@={viewModel.email}" />
+                        android:text="@={viewModel.password}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button

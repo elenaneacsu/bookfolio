@@ -1,11 +1,7 @@
 package com.elenaneacsu.bookfolio.extensions
 
-/**
- * Created by Grigore Cristian-Andrei on 17.03.2021.
- */
 import android.text.TextUtils
 import com.elenaneacsu.bookfolio.extensions.PasswordErrors.*
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 

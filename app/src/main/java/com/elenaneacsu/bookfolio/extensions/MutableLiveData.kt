@@ -2,9 +2,6 @@ package com.elenaneacsu.bookfolio.extensions
 
 import androidx.lifecycle.MutableLiveData
 
-/**
- * Created by Grigore Cristian-Andrei on 17.03.2021.
- */
 
 fun MutableLiveData<String>.checkStringValue(
     condition: (String) -> Boolean,

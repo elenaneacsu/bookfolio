@@ -3,10 +3,6 @@ package com.elenaneacsu.bookfolio.utils.date
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Created by Grigore Cristian-Andrei on 15.03.2021.
- */
-
 enum class Format(val format: String) {
     FORMAT1("MM/dd/yyyy HH:mm:ss"),
     FORMAT2("dd/MM/yyyy hh:mm:ss"),

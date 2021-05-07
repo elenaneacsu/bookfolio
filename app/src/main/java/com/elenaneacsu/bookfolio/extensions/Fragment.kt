@@ -5,9 +5,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 /**
- * Created by Grigore Cristian-Andrei on 18.03.2021.
- */
-/**
  * show toast method
  *
  * @param message string to display as toast message

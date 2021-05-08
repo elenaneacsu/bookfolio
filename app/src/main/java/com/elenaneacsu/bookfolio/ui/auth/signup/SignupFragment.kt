@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.elenaneacsu.bookfolio.MainActivity
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentSignupBinding
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.setOnDrawableRightClickListener
 import com.elenaneacsu.bookfolio.extensions.startActivityWithFlags
 import com.elenaneacsu.bookfolio.extensions.updateStatusBarColor
+import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.ui.auth.AuthActivity
 import com.elenaneacsu.bookfolio.ui.auth.AuthViewModel
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment

@@ -1,6 +1,7 @@
 package com.elenaneacsu.bookfolio.extensions
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -181,6 +182,17 @@ fun <T> FragmentActivity.startActivityWithFlags(`class`: Class<T>) {
     val intent = Intent(this, `class`)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     finishAffinity()
+    startActivity(intent)
+}
+
+/**
+ * Start activity with FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+ *
+ * @param `class` - class of the activity to start
+ */
+fun <T> Application.startActivityWithFlags(`class`: Class<T>) {
+    val intent = Intent(this, `class`)
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(intent)
 }
 

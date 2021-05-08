@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
-import com.elenaneacsu.bookfolio.MainActivity
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentLoginBinding
 import com.elenaneacsu.bookfolio.extensions.*
+import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.ui.auth.AuthActivity
 import com.elenaneacsu.bookfolio.ui.auth.AuthViewModel
 import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
@@ -57,6 +57,7 @@ class LoginFragment : BaseMvvmFragment<AuthViewModel, FragmentLoginBinding>(
 
     override fun initObservers() {
         super.initObservers()
+
         viewModel.loginResult.observe(viewLifecycleOwner, {
             when (it.status) {
                 BookfolioResult.Status.LOADING -> showProgress()

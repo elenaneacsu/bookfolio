@@ -12,9 +12,6 @@ class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-
-
-//        val containerView = findViewById<FragmentContainerView>(R.id.fragment_nav_host)
     }
 
     override fun onNavigateUp(): Boolean {

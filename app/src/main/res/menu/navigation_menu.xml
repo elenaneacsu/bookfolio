@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/navigation_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/shelves"
+            android:icon="@drawable/ic_navigation_shelves_24dp"
+            android:title="@string/shelves"></item>
+        <item
+            android:id="@+id/quotes"
+            android:icon="@drawable/ic_navigation_quotes_24dp"
+            android:title="@string/quotes" />
+        <item
+            android:id="@+id/discover"
+            android:icon="@drawable/ic_navigation_discover_24dp"
+            android:title="@string/discover" />
+        <item
+            android:id="@+id/account"
+            android:icon="@drawable/ic_navigation_account_24dp"
+            android:title="@string/account" />
+    </group>
+
+</menu>

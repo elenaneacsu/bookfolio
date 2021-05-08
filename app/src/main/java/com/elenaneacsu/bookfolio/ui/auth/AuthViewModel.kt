@@ -30,6 +30,8 @@ class AuthViewModel @Inject constructor(
     val signupResult: LiveData<BookfolioResult<String>>
         get() = _signupResult
 
+    private val _isUserLoggedIn = MutableLiveData<Boolean>()
+
 
     fun login() = makeRequest(resourceString, ioContext, _loginResult) {
         handleFieldsValidation(isLoggingIn = true)

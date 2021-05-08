@@ -1,6 +1,11 @@
 package com.elenaneacsu.bookfolio.app
 
 import android.app.Application
+import com.elenaneacsu.bookfolio.extensions.startActivityWithFlags
+import com.elenaneacsu.bookfolio.ui.MainActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.HiltAndroidApp
 
 /**
@@ -8,4 +13,14 @@ import dagger.hilt.android.HiltAndroidApp
  */
 @HiltAndroidApp
 class BookfolioApplication : Application() {
+
+    private lateinit var auth: FirebaseAuth
+
+    override fun onCreate() {
+        super.onCreate()
+
+        auth = Firebase.auth
+        if (auth.currentUser != null)
+            startActivityWithFlags(MainActivity::class.java)
+    }
 }

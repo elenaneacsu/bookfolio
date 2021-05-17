@@ -7,11 +7,24 @@
     <fragment
         android:id="@+id/shelvesFragment"
         android:name="com.elenaneacsu.bookfolio.ui.shelves.ShelvesFragment"
-        android:label="ShelvesFragment" />
+        android:label="ShelvesFragment">
+        <action
+            android:id="@+id/action_shelvesFragment_to_shelfFragment"
+            app:destination="@id/shelfFragment" />
+    </fragment>
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.elenaneacsu.bookfolio.ui.account.AccountFragment"
         android:label="AccountFragment" />
+    <fragment
+        android:id="@+id/shelfFragment"
+        android:name="com.elenaneacsu.bookfolio.ui.shelves.shelf.ShelfFragment"
+        android:label="ShelfFragment">
+        <argument
+            android:name="shelf"
+            app:argType="com.elenaneacsu.bookfolio.models.Shelf"
+            app:nullable="true" />
+    </fragment>
 
 
 </navigation>

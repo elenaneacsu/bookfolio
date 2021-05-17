@@ -25,5 +25,9 @@
 
     <!-- Shelves region -->
     <string name="shelves_welcome_message">Hi %1$s,\nYou are currently reading</string>
+    <string name="number_of_books">%1$s books</string>
+    <string name="to_read_shelf">To read</string>
+    <string name="read_shelf">Read</string>
+    <string name="currently_reading_shelf">Currently reading</string>
 
 </resources>

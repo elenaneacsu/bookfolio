@@ -1,5 +1,6 @@
 package com.elenaneacsu.bookfolio.ui.auth
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.R
@@ -9,6 +10,7 @@ import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.system.measureNanoTime
 import com.elenaneacsu.bookfolio.extensions.Result as BookfolioResult
 
 @HiltViewModel
@@ -30,8 +32,6 @@ class AuthViewModel @Inject constructor(
     val signupResult: LiveData<BookfolioResult<String>>
         get() = _signupResult
 
-    private val _isUserLoggedIn = MutableLiveData<Boolean>()
-
 
     fun login() = makeRequest(resourceString, ioContext, _loginResult) {
         handleFieldsValidation(isLoggingIn = true)
@@ -50,8 +50,15 @@ class AuthViewModel @Inject constructor(
 
         if (isRequestOk) {
             _signupResult.postValue(BookfolioResult.loading())
-            authRepository.signup(name.value!!, email.value!!, password.value!!)
-            _signupResult.postValue(BookfolioResult.success())
+            val time = measureNanoTime {
+                authRepository.signup(
+                    name.value!!,
+                    email.value!!,
+                    password.value!!
+                )
+                _signupResult.postValue(BookfolioResult.success())
+            }
+            Log.d("TAG", "signup: $time")
         } else {
             setError(resourceString.getString(R.string.check_credentials))
         }

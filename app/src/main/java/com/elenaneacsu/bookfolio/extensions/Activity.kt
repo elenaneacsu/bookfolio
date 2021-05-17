@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -228,4 +229,14 @@ fun AppCompatActivity.logDebug(msg: String?) {
 
 fun AppCompatActivity.logError(msg: String?, tr: Throwable?) {
     Log.e(javaClass.simpleName, msg, tr)
+}
+
+/**
+ * Get a theme colour based on one of its attributes
+ */
+fun Context.getThemeColor(themeAttribute: Int): Int {
+    val typedValue = TypedValue()
+    val theme = this.theme
+    theme.resolveAttribute(themeAttribute, typedValue, true)
+    return typedValue.data
 }

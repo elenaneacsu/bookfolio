@@ -18,10 +18,10 @@ class ShelfAdapter(
     BaseViewHolder.OnItemClickListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShelfViewHolder {
-        val itemPromotionBinding = ShelfLayoutBinding.inflate(layoutInflater, parent, false)
+        val shelfItemBinding = ShelfLayoutBinding.inflate(layoutInflater, parent, false)
 
         return ShelfViewHolder(
-            itemPromotionBinding,
+            shelfItemBinding,
             this
         )
     }

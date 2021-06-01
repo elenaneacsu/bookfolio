@@ -76,6 +76,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
 
+    // Glide
+    implementation Deps.glide
+    kapt Deps.glideCompiler
+//    implementation 'com.github.bumptech.glide:glide:4.12.0'
+
     // Hilt
 
     implementation "com.google.dagger:hilt-android:2.35"

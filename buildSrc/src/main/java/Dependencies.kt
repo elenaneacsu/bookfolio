@@ -16,6 +16,7 @@ object Versions {
     const val androidxCoordinatorLayout = "1.1.0"
     const val dagger = "2.33"
     const val fragment = "1.3.0"
+    const val glide = "4.12.0"
     const val googleServices = "4.3.5"
     const val lifecycle = "2.3.0"
     const val material = "1.4.0-alpha01"
@@ -63,6 +64,10 @@ object Deps {
 
     // Google
     const val googleServices = "com.google.gms:google-services:${Versions.googleServices}"
+
+    // Glide
+    const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
+    const val glideCompiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
 
     // Lifecycle
 

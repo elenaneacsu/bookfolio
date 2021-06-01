@@ -6,6 +6,8 @@ package com.elenaneacsu.bookfolio.utils
 class Constants {
     companion object {
         const val BASE_URL = "https://www.googleapis.com/books/v1/"
+        const val PARTIAL_SEARCH_QUERY_FIELDS = "kind,totalItems," +
+                "items(id,volumeInfo(title, authors, imageLinks))"
 
         const val USERS_COLLECTION = "users"
         const val CURRENTLY_READING_COLLECTION = "currently_reading"
@@ -13,5 +15,8 @@ class Constants {
         const val READ_COLLECTION = "read"
 
         const val NUMBER_OF_BOOKS = "number_of_books"
+
+        const val SPACE = " "
+        const val PLUS = "+"
     }
 }

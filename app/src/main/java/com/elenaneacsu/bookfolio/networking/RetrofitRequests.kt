@@ -1,5 +1,7 @@
 package com.elenaneacsu.bookfolio.networking
 
+import com.elenaneacsu.bookfolio.models.google_books_api_models.SearchResponse
+import com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeDetailsResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,5 +13,10 @@ import javax.inject.Singleton
 class RetrofitRequests @Inject constructor(private val booksService: BooksService) :
     IRetrofitRequests {
 
-    override suspend fun getVolumes(searchQuery: String) = booksService.getVolumes(searchQuery)
+    override suspend fun getVolumes(searchQuery: String): SearchResponse =
+        booksService.getVolumes(searchQuery)
+
+    override suspend fun getSingleVolume(id: String): VolumeDetailsResponse =
+        booksService.getSingleVolume(id)
+
 }

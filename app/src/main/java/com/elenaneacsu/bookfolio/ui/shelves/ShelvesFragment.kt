@@ -70,9 +70,7 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     }
 
     override fun hideProgress() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            viewBinding.pullToRefresh.isRefreshing = false
-        }, 1000)
+        viewBinding.pullToRefresh.isRefreshing = false
     }
 
     override fun showProgress() {
@@ -80,11 +78,9 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     }
 
     override fun errorAlert(message: String) {
-//        TODO("Not yet implemented")
     }
 
     override fun successAlert(message: String) {
-//        TODO("Not yet implemented")
     }
 
 }

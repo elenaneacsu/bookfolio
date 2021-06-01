@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -22,9 +23,13 @@ class ShelvesRepository @Inject constructor() : BaseRepository() {
     suspend fun getShelves(): List<DocumentSnapshot?> {
         val toReadShelf = async(Dispatchers.IO) { getToReadCollection() }
         val currentlyReadingShelf = async(Dispatchers.IO) { getCurrentlyReadingCollection() }
-        val readShelf = async(Dispatchers.IO) { getReadCollection() }
+        val readShelf = async(Dispatchers.IO) {
+            getReadCollection()
+        }
+        val delay = async(Dispatchers.IO) { delay(500) }
 
-        return awaitAll(toReadShelf, currentlyReadingShelf, readShelf)
+
+        return awaitAll(toReadShelf, currentlyReadingShelf, readShelf, delay).filterIsInstance(DocumentSnapshot::class.java)
     }
 
     private suspend fun getToReadCollection() =

@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity(),
         }
         R.id.discover -> {
 //            openDiscoverFragment()
+            findNavController(R.id.fragment_nav_host).navigate(R.id.searchFragment)
             true
         }
         R.id.account -> {

@@ -7,7 +7,7 @@
         <item
             android:id="@+id/shelves"
             android:icon="@drawable/ic_navigation_shelves_24dp"
-            android:title="@string/shelves"></item>
+            android:title="@string/shelves" />
         <item
             android:id="@+id/quotes"
             android:icon="@drawable/ic_navigation_quotes_24dp"

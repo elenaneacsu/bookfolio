@@ -1,6 +1,7 @@
 package com.elenaneacsu.bookfolio.ui.shelves.shelf
 
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
+import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialItem
 import com.elenaneacsu.bookfolio.networking.RetrofitRequests
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
 import javax.inject.Inject
@@ -11,8 +12,8 @@ import javax.inject.Inject
 class ShelfRepository @Inject constructor(private val retrofitRequests: RetrofitRequests) :
     BaseRepository() {
 
-    suspend fun searchBooks(searchQuery: String): List<Item>? {
+    suspend fun searchBooks(searchQuery: String): List<PartialItem>? {
         val response = retrofitRequests.getVolumes(searchQuery)
-        return response.items?.subList(0, 3)
+        return response.items
     }
 }

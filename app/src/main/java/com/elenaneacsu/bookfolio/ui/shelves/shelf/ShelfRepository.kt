@@ -1,6 +1,5 @@
 package com.elenaneacsu.bookfolio.ui.shelves.shelf
 
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialItem
 import com.elenaneacsu.bookfolio.networking.RetrofitRequests
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository

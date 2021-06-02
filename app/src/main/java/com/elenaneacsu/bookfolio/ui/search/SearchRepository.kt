@@ -1,6 +1,6 @@
 package com.elenaneacsu.bookfolio.ui.search
 
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
+import com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse
 import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialItem
 import com.elenaneacsu.bookfolio.networking.RetrofitRequests
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
@@ -17,6 +17,7 @@ class SearchRepository @Inject constructor(private val retrofitRequests: Retrofi
         return response.items
     }
 
-    suspend fun getBooksDetails(id: String): Item? =
-        retrofitRequests.getSingleVolume(id).item
-}
+    suspend fun getBooksDetails(id: String): FullItemResponse? =
+//        retrofitRequests.getSingleVolume(id).item
+        retrofitRequests.getSingleVolume(id)
+    }

@@ -31,7 +31,8 @@
         android:label="SearchFragment">
         <action
             android:id="@+id/action_searchFragment_to_bookDetailsFragment"
-            app:destination="@id/bookDetailsFragment" />
+            app:destination="@id/bookDetailsFragment"
+            app:popUpTo="@id/searchFragment"/>
     </fragment>
     <fragment
         android:id="@+id/bookDetailsFragment"

@@ -1,7 +1,7 @@
 package com.elenaneacsu.bookfolio.networking
 
+import com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse
 import com.elenaneacsu.bookfolio.models.google_books_api_models.SearchResponse
-import com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeDetailsResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +16,7 @@ class RetrofitRequests @Inject constructor(private val booksService: BooksServic
     override suspend fun getVolumes(searchQuery: String): SearchResponse =
         booksService.getVolumes(searchQuery)
 
-    override suspend fun getSingleVolume(id: String): VolumeDetailsResponse =
+    override suspend fun getSingleVolume(id: String): FullItemResponse =
         booksService.getSingleVolume(id)
 
 }

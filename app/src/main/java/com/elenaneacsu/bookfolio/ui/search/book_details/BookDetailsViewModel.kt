@@ -4,11 +4,13 @@ import com.elenaneacsu.bookfolio.ui.search.SearchRepository
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 /**
  * Created by Elena Neacsu on 01/06/21
  */
+@HiltViewModel
 class BookDetailsViewModel @Inject constructor(
     resourceString: ResourceString,
     coroutineContextProvider: CoroutineContextProvider,

@@ -49,4 +49,7 @@ class MainActivity : AppCompatActivity(),
     override fun onNavigationItemReselected(item: MenuItem) {
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController(R.id.fragment_nav_host).navigateUp()
+    }
 }

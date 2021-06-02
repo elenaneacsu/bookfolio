@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
+import com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse
 import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialItem
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.PLUS
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.SPACE
@@ -29,9 +29,13 @@ class SearchViewModel @Inject constructor(
     val booksSearchResult: LiveData<Result<List<PartialItem>>>
         get() = _booksSearchResult
 
-    private val _bookDetailsResult = MutableLiveData<Result<Item>>()
-    val bookDetailsResult: LiveData<Result<Item>>
+    private val _bookDetailsResult = MutableLiveData<Result<FullItemResponse>>()
+    val bookDetailsResult: LiveData<Result<FullItemResponse>>
         get() = _bookDetailsResult
+
+    private val _isBookClickHandled = MutableLiveData<Boolean>()
+    val isBookClickHandled: LiveData<Boolean>
+        get() = _isBookClickHandled
 
     fun searchBooks(searchTerm: String) =
         makeRequest(resourceString, ioContext, _booksSearchResult) {
@@ -50,9 +54,13 @@ class SearchViewModel @Inject constructor(
 
     fun getBookDetails(volumeId: String) =
         makeRequest(resourceString, ioContext, _bookDetailsResult) {
+            _isBookClickHandled.postValue(false)
             _bookDetailsResult.postValue(Result.loading())
             val book = repository.getBooksDetails(volumeId)
-            if (book != null)
+            if (book != null) {
                 _bookDetailsResult.postValue(Result.success(book))
+                _isBookClickHandled.postValue(true)
+            }
+
         }
 }

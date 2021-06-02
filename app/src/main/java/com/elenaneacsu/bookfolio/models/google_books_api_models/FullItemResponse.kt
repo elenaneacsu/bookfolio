@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
  * Created by Elena Neacsu on 14/05/21
  */
 @Parcelize
-data class Item(
+data class FullItemResponse(
     val kind: String? = null,
     val id: String? = null,
     val volumeInfo: VolumeInfo? = null

@@ -11,7 +11,6 @@ import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.getThemeColor
 import com.elenaneacsu.bookfolio.extensions.hideKeyboard
 import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialItem
-import com.elenaneacsu.bookfolio.ui.shelves.ShelvesFragmentDirections
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -105,8 +104,10 @@ class SearchFragment : BookAdapter.OnItemClickListener,
                 Result.Status.SUCCESS -> {
                     hideProgress()
                     it.data?.let { bookDetails ->
-                        val direction = SearchFragmentDirections.actionSearchFragmentToBookDetailsFragment(bookDetails)
-                        findNavController().navigate(direction)
+                        if (viewModel.isBookClickHandled.value == false) {
+                            val direction = SearchFragmentDirections.actionSearchFragmentToBookDetailsFragment(bookDetails)
+                            findNavController().navigate(direction)
+                        }
                     }
                 }
                 Result.Status.ERROR -> {

@@ -5,23 +5,38 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.navigation.fragment.findNavController
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentBookDetailsBinding
+import com.elenaneacsu.bookfolio.extensions.toast
+import com.elenaneacsu.bookfolio.ui.shelves.shelf.ShelfFragmentArgs
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by Elena Neacsu on 01/06/21
  */
+@AndroidEntryPoint
 class BookDetailsFragment : BaseMvvmFragment<BookDetailsViewModel, FragmentBookDetailsBinding>(
     R.layout.fragment_book_details, BookDetailsViewModel::class.java
 ) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book_details, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bundle = arguments ?: return
+
+        val args = BookDetailsFragmentArgs.fromBundle(bundle)
+        toast(args.book.volumeInfo?.title ?: "no title was received", Toast.LENGTH_LONG)
+
+//        requireActivity().onBackPressedDispatcher
+//            .addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    //Handle back event from any fragment
+//                    findNavController().popBackStack()
+//                }
+//            })
     }
 
     override fun hideProgress() {

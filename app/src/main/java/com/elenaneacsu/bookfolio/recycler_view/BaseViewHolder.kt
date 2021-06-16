@@ -8,7 +8,6 @@ open class BaseViewHolder<T, VDB : ViewDataBinding>(
 ) : RecyclerView.ViewHolder(itemBinding.root) {
 
     open fun bindItem(item: T) {
-
     }
 
     interface OnItemClickListener {

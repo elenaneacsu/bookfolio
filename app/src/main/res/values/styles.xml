@@ -11,4 +11,10 @@
         <item name="backgroundTint">?colorAccent</item>
         <item name="elevation">4dp</item>
     </style>
+
+    <style name="GoogleButton" parent="TextAppearance.AppCompat.Widget.Button">
+        <item name="android:background">@drawable/button_rounded_corners</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="elevation">4dp</item>
+    </style>
 </resources>

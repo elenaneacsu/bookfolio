@@ -46,6 +46,10 @@ class LoginFragment : BaseMvvmFragment<AuthViewModel, FragmentLoginBinding>(
                 this@LoginFragment.viewModel.login()
             }
 
+            forgotPassword.setOnOneOffClickListener {
+                this@LoginFragment.viewModel.forgotPassword()
+            }
+
             goToSignUp.setOnOneOffClickListener {
                 goToSignUp()
             }
@@ -64,6 +68,21 @@ class LoginFragment : BaseMvvmFragment<AuthViewModel, FragmentLoginBinding>(
                 BookfolioResult.Status.SUCCESS -> {
                     hideProgress()
                     activity?.startActivityWithFlags(MainActivity::class.java)
+                }
+                BookfolioResult.Status.ERROR -> {
+                    hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
+
+        viewModel.forgotPassResult.observe(viewLifecycleOwner, {
+            when(it.status) {
+                BookfolioResult.Status.LOADING -> showProgress()
+                BookfolioResult.Status.SUCCESS -> {
+                    hideProgress()
+                    if(viewModel.isForgotPassHandled.value == false)
+                        toast("Verify your email for further instructions")
                 }
                 BookfolioResult.Status.ERROR -> {
                     hideProgress()

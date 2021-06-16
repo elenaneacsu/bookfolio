@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ResourceString @Inject constructor(
-    private val context: Context,
+    private val context: Context
 ) {
     fun getString(@StringRes stringId: Int) = context.getString(stringId)
 }

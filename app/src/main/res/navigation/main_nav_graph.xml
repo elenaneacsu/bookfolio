@@ -40,7 +40,7 @@
         android:label="BookDetailsFragment">
         <argument
             android:name="book"
-            app:argType="com.elenaneacsu.bookfolio.models.google_books_api_models.Item" />
+            app:argType="com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse" />
     </fragment>
 
 

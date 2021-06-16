@@ -37,7 +37,9 @@ class AuthRepository @Inject constructor() : BaseRepository() {
         }
     }
 
-    suspend fun createCollections() {
+    suspend fun forgotPassword(email:String) = auth.sendPasswordResetEmail(email).await()
+
+    private suspend fun createCollections() {
         val isCurrentlyReadingColCreated =
             async(Dispatchers.IO) { createCurrentlyReadingCollection() }
         val isToReadColCreated = async(Dispatchers.IO) { createToReadCollection() }
@@ -45,16 +47,6 @@ class AuthRepository @Inject constructor() : BaseRepository() {
 
         awaitAll(isCurrentlyReadingColCreated, isToReadColCreated, isReadColCreated)
     }
-
-    private fun updateUserDisplayName(name: String) =
-        auth.currentUser?.updateProfile(
-            UserProfileChangeRequest.Builder().setDisplayName(name).build()
-        )
-
-    private fun addNewUser(user: User, firebaseUser: FirebaseUser) =
-        firestore.collection(USERS_COLLECTION)
-            .document(firebaseUser.uid)
-            .set(user)
 
     private suspend fun createCurrentlyReadingCollection() =
         auth.currentUser?.let {
@@ -85,6 +77,16 @@ class AuthRepository @Inject constructor() : BaseRepository() {
                 .set(setUpShelfDoc(ShelfType.READ))
                 .await()
         }
+
+    private fun updateUserDisplayName(name: String) =
+        auth.currentUser?.updateProfile(
+            UserProfileChangeRequest.Builder().setDisplayName(name).build()
+        )
+
+    private fun addNewUser(user: User, firebaseUser: FirebaseUser) =
+        firestore.collection(USERS_COLLECTION)
+            .document(firebaseUser.uid)
+            .set(user)
 
     private fun setUpShelfDoc(shelfType: ShelfType) = Shelf(shelfType.valueAsString, 0)
 }

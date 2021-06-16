@@ -15,7 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:padding="@dimen/medium_padding">
+        android:padding="@dimen/medium_padding"
+        android:background="@color/white_grey">
 
         <ImageView
             android:id="@+id/books_icon"
@@ -54,7 +55,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/parent_layout_email"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
@@ -74,7 +75,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/parent_layout_password"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white_grey"
@@ -93,6 +94,19 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
+                    android:id="@+id/forgot_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/forgot_password"
+                    android:stateListAnimator="@null"
+                    android:layout_marginTop="-16dp"
+                    android:layout_marginEnd="-16dp"
+                    android:layout_gravity="end"
+                    android:backgroundTint="@color/white_grey"
+                    android:paddingBottom="@dimen/small_padding"
+                    android:textColor="?colorAccent"/>
+
+                <Button
                     android:id="@+id/login"
                     style="@style/RoundedButton"
                     android:layout_width="match_parent"
@@ -106,6 +120,23 @@
                     android:layout_gravity="center_horizontal"
                     android:padding="@dimen/medium_padding"
                     android:text="@string/create_account_redirect" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="or"
+                    android:layout_gravity="center_horizontal" />
+
+                <Button
+                    android:id="@+id/google_auth"
+                    style="@style/GoogleButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:text="@string/continue_with_google"
+                    android:drawableLeft="@drawable/ic_google_logo"/>
+
+
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

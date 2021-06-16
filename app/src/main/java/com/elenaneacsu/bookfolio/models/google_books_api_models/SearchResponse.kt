@@ -6,5 +6,5 @@ package com.elenaneacsu.bookfolio.models.google_books_api_models
 data class SearchResponse(
     val kind: String? = null,
     val totalItems: Int? = null,
-    val items: List<PartialItem>? = null
+    val items: List<Item>? = null
 )

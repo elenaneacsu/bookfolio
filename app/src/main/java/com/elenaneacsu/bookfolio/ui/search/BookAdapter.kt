@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.request.RequestOptions
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.BookLayoutBinding
-import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialItem
-import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialVolumeInfo
+import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.recycler_view.BaseAdapter
 import com.elenaneacsu.bookfolio.recycler_view.BaseViewHolder
 import com.elenaneacsu.bookfolio.utils.GlideApp
@@ -19,7 +18,7 @@ import com.elenaneacsu.bookfolio.utils.GlideApp
 class BookAdapter(
     private val context: Context,
     private val itemClickListener: OnItemClickListener,
-) : BaseAdapter<PartialItem, BookViewHolder>(context),
+) : BaseAdapter<Item, BookViewHolder>(context),
     BaseViewHolder.OnItemClickListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -40,7 +39,6 @@ class BookAdapter(
                 .apply(RequestOptions())
                 .placeholder(R.drawable.ic_bookshelf_filled_24dp)
                 .into(holder.itemBinding.bookCover)
-            Log.d("TAG", "onBindViewHolder: image $image")
         } else {
             GlideApp.with(context).clear(holder.itemBinding.bookCover)
             holder.itemBinding.bookCover.setImageDrawable(null)
@@ -55,6 +53,6 @@ class BookAdapter(
     }
 
     interface OnItemClickListener {
-        fun onBookClicked(book: PartialItem)
+        fun onBookClicked(book: Item)
     }
 }

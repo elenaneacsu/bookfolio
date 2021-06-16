@@ -13,7 +13,7 @@ open class BaseViewModel(
 
     var isRequestOk = false
 
-    private val _fieldValidation = MutableLiveData<Boolean>(false)
+    private val _fieldValidation = MutableLiveData(false)
     val fieldValidation: LiveData<Boolean>
         get() = _fieldValidation
 

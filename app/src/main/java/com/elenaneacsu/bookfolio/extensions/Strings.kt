@@ -60,7 +60,6 @@ fun String?.isValidPhoneNumber(): Boolean {
     return this != null && !TextUtils.isEmpty(this) && this.matches(regexPhoneNumberPattern)
 }
 
-// FIXME: 06.11.2020 remove method and uncomment the other one. no password validation from the server side.
 fun String?.isValidPassword(): Boolean {
     return this != null && !TextUtils.isEmpty(this)
 }

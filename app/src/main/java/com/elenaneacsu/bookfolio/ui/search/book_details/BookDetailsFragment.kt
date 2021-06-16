@@ -30,13 +30,6 @@ class BookDetailsFragment : BaseMvvmFragment<BookDetailsViewModel, FragmentBookD
         val args = BookDetailsFragmentArgs.fromBundle(bundle)
         toast(args.book.volumeInfo?.title ?: "no title was received", Toast.LENGTH_LONG)
 
-//        requireActivity().onBackPressedDispatcher
-//            .addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//                    //Handle back event from any fragment
-//                    findNavController().popBackStack()
-//                }
-//            })
     }
 
     override fun hideProgress() {

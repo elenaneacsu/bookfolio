@@ -10,7 +10,7 @@ import com.elenaneacsu.bookfolio.databinding.FragmentSearchBinding
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.getThemeColor
 import com.elenaneacsu.bookfolio.extensions.hideKeyboard
-import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialItem
+import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,7 +68,6 @@ class SearchFragment : BookAdapter.OnItemClickListener,
             viewBinding.pullToRefresh.setColorSchemeColors(it.getThemeColor(R.attr.colorAccent))
         }
         viewBinding.pullToRefresh.setOnRefreshListener {
-//            viewModel.searchBooks()
             hideProgress()
         }
 
@@ -119,7 +118,7 @@ class SearchFragment : BookAdapter.OnItemClickListener,
     }
 
 
-    override fun onBookClicked(book: PartialItem) {
+    override fun onBookClicked(book: Item) {
         book.id?.let { viewModel.getBookDetails(it) }
     }
 

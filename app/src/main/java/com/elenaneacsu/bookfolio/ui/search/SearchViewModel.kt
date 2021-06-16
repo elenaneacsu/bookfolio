@@ -1,12 +1,11 @@
 package com.elenaneacsu.bookfolio.ui.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
 import com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse
-import com.elenaneacsu.bookfolio.models.google_books_api_models.PartialItem
+import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.PLUS
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.SPACE
 import com.elenaneacsu.bookfolio.utils.ResourceString
@@ -25,8 +24,8 @@ class SearchViewModel @Inject constructor(
     private val repository: SearchRepository
 ) : BaseViewModel(resourceString, coroutineContextProvider) {
 
-    private val _booksSearchResult = MutableLiveData<Result<List<PartialItem>>>()
-    val booksSearchResult: LiveData<Result<List<PartialItem>>>
+    private val _booksSearchResult = MutableLiveData<Result<List<Item>>>()
+    val booksSearchResult: LiveData<Result<List<Item>>>
         get() = _booksSearchResult
 
     private val _bookDetailsResult = MutableLiveData<Result<FullItemResponse>>()
@@ -42,12 +41,10 @@ class SearchViewModel @Inject constructor(
             _booksSearchResult.postValue(Result.loading())
             val formattedSearchTerm = searchTerm.replace(SPACE, PLUS)
             val items = repository.searchBooks(formattedSearchTerm)
-            val books = mutableListOf<PartialItem>()
+            val books = mutableListOf<Item>()
             if (items != null) {
-                for (item in items) {
-                    Log.d("TAG", "makeTestRequest: " + item.volumeInfo?.title)
+                for (item in items)
                     books.add(item)
-                }
             }
             _booksSearchResult.postValue(Result.success(books.toList()))
         }

@@ -7,6 +7,8 @@
     <string name="create_account_redirect">Don\'t have an account? Click here to create one</string>
     <string name="name">Name</string>
     <string name="create_account">Create account</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="continue_with_google">Continue with Google</string>
     <string name="register_account_toolbar">Register Account</string>
 
     <!-- Error messages -->
@@ -14,6 +16,7 @@
     <string name="check_credentials">Please check your credentials</string>
     <string name="account_does_not_exist">This account does not exist</string>
     <string name="invalid_password">The password that you have entered does not match the one we have on file</string>
+    <string name="invalid_email">Please provide a valid email</string>
     <string name="permission_denied">Permission denied</string>
     <string name="no_internet_connection">No internet connection</string>
 
@@ -29,8 +32,7 @@
     <string name="to_read_shelf">To read</string>
     <string name="read_shelf">Read</string>
     <string name="currently_reading_shelf">Currently reading</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_hint">Search title, author or ISBN</string>
+
 
 </resources>

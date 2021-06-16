@@ -1,6 +1,5 @@
 package com.elenaneacsu.bookfolio.ui.auth
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.R
@@ -10,7 +9,6 @@ import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlin.system.measureNanoTime
 import com.elenaneacsu.bookfolio.extensions.Result as BookfolioResult
 
 @HiltViewModel
@@ -32,6 +30,14 @@ class AuthViewModel @Inject constructor(
     val signupResult: LiveData<BookfolioResult<String>>
         get() = _signupResult
 
+    private val _forgotPassResult = MutableLiveData<BookfolioResult<Void>>()
+    val forgotPassResult: LiveData<BookfolioResult<Void>>
+        get() = _forgotPassResult
+
+    private val _isForgotPassHandled = MutableLiveData<Boolean>()
+    val isForgotPassHandled: LiveData<Boolean>
+        get() = _isForgotPassHandled
+
 
     fun login() = makeRequest(resourceString, ioContext, _loginResult) {
         handleFieldsValidation(isLoggingIn = true)
@@ -50,21 +56,34 @@ class AuthViewModel @Inject constructor(
 
         if (isRequestOk) {
             _signupResult.postValue(BookfolioResult.loading())
-            val time = measureNanoTime {
-                authRepository.signup(
-                    name.value!!,
-                    email.value!!,
-                    password.value!!
-                )
-                _signupResult.postValue(BookfolioResult.success())
-            }
-            Log.d("TAG", "signup: $time")
+            authRepository.signup(
+                name.value!!,
+                email.value!!,
+                password.value!!
+            )
+            _signupResult.postValue(BookfolioResult.success())
         } else {
             setError(resourceString.getString(R.string.check_credentials))
         }
     }
 
-    private fun handleFieldsValidation(isLoggingIn: Boolean) {
+    fun forgotPassword() = makeRequest(resourceString, ioContext, _forgotPassResult) {
+        handleFieldsValidation(isLoggingIn = false, hasForgotPassword = true)
+        if (isRequestOk) {
+            _forgotPassResult.postValue(BookfolioResult.loading())
+
+            _isForgotPassHandled.postValue(false)
+
+            authRepository.forgotPassword(email.value!!)
+            _forgotPassResult.postValue(BookfolioResult.success())
+
+            _isForgotPassHandled.postValue(true)
+        } else {
+            setError(resourceString.getString(R.string.invalid_email))
+        }
+    }
+
+    private fun handleFieldsValidation(isLoggingIn: Boolean, hasForgotPassword: Boolean = false) {
         var isNameOk = false
         var isEmailOk = false
         var isPasswordOk = false
@@ -109,7 +128,11 @@ class AuthViewModel @Inject constructor(
         )
 
         isRequestOk =
-            if (isLoggingIn) isEmailOk && isPasswordOk else isNameOk && isEmailOk && isPasswordOk
+            when {
+                isLoggingIn -> isEmailOk && isPasswordOk
+                hasForgotPassword -> isEmailOk
+                else -> isNameOk && isEmailOk && isPasswordOk
+            }
 
     }
 

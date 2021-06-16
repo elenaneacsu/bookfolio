@@ -6,10 +6,10 @@
 
     <data>
 
-        <import type="com.elenaneacsu.bookfolio.models.google_books_api_models.PartialVolumeInfo"/>
+        <import type="com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeInfo"/>
         <variable
             name="book"
-            type="PartialVolumeInfo" />
+            type="VolumeInfo" />
     </data>
 
     <androidx.cardview.widget.CardView

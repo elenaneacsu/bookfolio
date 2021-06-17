@@ -1,35 +1,38 @@
-package com.elenaneacsu.bookfolio.ui.search
+package com.elenaneacsu.bookfolio.ui.shelves
 
 import android.content.Context
 import android.view.ViewGroup
 import com.bumptech.glide.request.RequestOptions
 import com.elenaneacsu.bookfolio.R
-import com.elenaneacsu.bookfolio.databinding.BookLayoutBinding
+import com.elenaneacsu.bookfolio.databinding.CurrentlyReadingLayoutBinding
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.recycler_view.BaseAdapter
 import com.elenaneacsu.bookfolio.recycler_view.BaseViewHolder
 import com.elenaneacsu.bookfolio.utils.GlideApp
-
+import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 
 /**
- * Created by Elena Neacsu on 19/05/21
+ * Created by Elena Neacsu on 17/06/21
  */
-class BookAdapter(
+class CurrentlyReadingBookAdapter(
     private val context: Context,
     private val itemClickListener: OnItemClickListener
-) : BaseAdapter<Item, BookViewHolder>(context),
+) : BaseAdapter<Item, CurrentlyReadingBookAdapter.CurrentlyReadingBookViewHolder>(context),
     BaseViewHolder.OnItemClickListener {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
-        val bookItemBinding = BookLayoutBinding.inflate(layoutInflater, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): CurrentlyReadingBookViewHolder {
+        val bookItemBinding = CurrentlyReadingLayoutBinding.inflate(layoutInflater, parent, false)
 
-        return BookViewHolder(
+        return CurrentlyReadingBookViewHolder(
             bookItemBinding,
             this
         )
     }
 
-    override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CurrentlyReadingBookViewHolder, position: Int) {
         holder.bindItem(_items[position])
         if (_items[position].volumeInfo?.imageLinks?.smallThumbnail != null) {
             val image = _items[position].volumeInfo?.imageLinks?.smallThumbnail
@@ -53,5 +56,20 @@ class BookAdapter(
 
     interface OnItemClickListener {
         fun onBookClicked(book: Item)
+    }
+
+    class CurrentlyReadingBookViewHolder(
+        val itemBinding: CurrentlyReadingLayoutBinding,
+        private val itemClickListener: OnItemClickListener,
+    ) : BaseViewHolder<Item, CurrentlyReadingLayoutBinding>(itemBinding) {
+
+        override fun bindItem(item: Item) {
+            itemBinding.book = item.volumeInfo
+            itemBinding.executePendingBindings()
+
+            itemBinding.constraintContainer.setOnOneOffClickListener {
+                itemClickListener.onItemClicked(adapterPosition)
+            }
+        }
     }
 }

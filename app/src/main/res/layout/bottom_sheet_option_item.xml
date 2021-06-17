@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.elenaneacsu.bookfolio.models.Shelf" />
+
+        <variable
+            name="shelf"
+            type="Shelf" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/option_layout_container"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/option_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:src="@drawable/ic_navigation_shelves_24dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            tools:background="@color/white_grey" />
+
+        <TextView
+            android:id="@+id/option_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:text="@{shelf.name}"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            tools:text="This is an option" />
+
+    </LinearLayout>
+</layout>

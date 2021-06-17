@@ -13,6 +13,10 @@
     <dimen name="large_margin">24dp</dimen>
     <dimen name="extra_large_margin">32dp</dimen>
 
+    <!-- ViewPager dimens-->
+    <dimen name="pageMargin">30dp</dimen>
+    <dimen name="offset">30dp</dimen>
+
     <dimen name="app_bar_background_height">190dp</dimen>
     <dimen name="recycler_view_margin_top">140dp</dimen>
 </resources>

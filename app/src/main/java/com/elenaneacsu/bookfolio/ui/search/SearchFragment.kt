@@ -10,7 +10,9 @@ import com.elenaneacsu.bookfolio.databinding.FragmentSearchBinding
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.getThemeColor
 import com.elenaneacsu.bookfolio.extensions.hideKeyboard
+import com.elenaneacsu.bookfolio.extensions.updateStatusBarColor
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
+import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,11 +48,13 @@ class SearchFragment : BookAdapter.OnItemClickListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-
         setHasOptionsMenu(true)
+        (activity as? MainActivity)?.apply {
+            manageBottomNavigationVisibility(View.VISIBLE)
+            updateStatusBarColor(R.color.primary, false)
+        }
 
-        return view
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun initViews() {
@@ -87,7 +91,9 @@ class SearchFragment : BookAdapter.OnItemClickListener,
                 Result.Status.LOADING -> showProgress()
                 Result.Status.SUCCESS -> {
                     hideProgress()
-                    it.data?.let { book -> booksAdapter?.add(book) }
+                    managePlaceholdersVisibility(shouldDisplay = false)
+                    viewBinding.booksRecyclerView.visibility = View.VISIBLE
+                    it.data?.let { books -> booksAdapter?.add(books) }
                     booksAdapter?.notifyDataSetChanged()
                 }
                 Result.Status.ERROR -> {
@@ -143,6 +149,14 @@ class SearchFragment : BookAdapter.OnItemClickListener,
         searchView.clearFocus()
         query?.let {
             viewModel.searchBooks(it)
+        }
+    }
+
+    private fun managePlaceholdersVisibility(shouldDisplay: Boolean) {
+        val visibility = if(shouldDisplay) View.VISIBLE else View.GONE
+        viewBinding.apply {
+            booksPlaceholderImage.visibility = visibility
+            booksPlaceholderText.visibility = visibility
         }
     }
 

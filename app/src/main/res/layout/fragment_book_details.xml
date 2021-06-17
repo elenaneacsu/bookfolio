@@ -1,21 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <import type="com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="book"
+            type="FullItemResponse" />
     </data>
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.search.book_details.BookDetailsFragment">
+        android:layout_height="match_parent">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Hello" />
+            android:layout_height="wrap_content"
+            tools:context=".ui.search.book_details.BookDetailsFragment">
 
-    </FrameLayout>
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="0dp"
+                app:elevation="0dp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?colorAccent"
+                    android:minHeight="?attr/actionBarSize"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:theme="@style/Toolbar" />
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <FrameLayout
+                android:id="@+id/progress_area"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminate="true" />
+            </FrameLayout>
+
+            <View
+                android:id="@+id/helper_layout"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="?colorAccent"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
+
+            <ImageView
+                android:id="@+id/book_cover"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                app:imageUrl="@{book.volumeInfo.imageLinks.thumbnail}"
+                app:layout_constraintBottom_toBottomOf="@id/helper_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/helper_layout"
+                tools:src="@drawable/ic_book_lover" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_shelves"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:backgroundTint="?colorPrimary"
+                android:src="@drawable/ic_plus_white_24dp"
+                app:fabSize="normal"
+                app:layout_constraintBottom_toBottomOf="@id/helper_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/helper_layout" />
+
+            <TextView
+                android:id="@+id/book_title"
+                style="@style/TextAppearance.AppCompat.Headline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:text="@{book.volumeInfo.title}"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/book_cover"
+                tools:text="Vino cu mine stiu exact unde mergem" />
+
+            <TextView
+                android:id="@+id/book_subtitle"
+                style="@style/TextAppearance.AppCompat.Headline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:text="@{book.volumeInfo.subtitle}"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:visibility="@{book.volumeInfo.subtitle != null ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/book_title"
+                tools:text="Antologia" />
+
+            <TextView
+                android:id="@+id/book_author"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:text="@{book.volumeInfo.authors.get(0)}"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/book_subtitle"
+                tools:text="Dan Sociu" />
+
+            <LinearLayout
+                android:id="@+id/book_info_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/medium_padding"
+                android:paddingBottom="@dimen/medium_padding"
+                app:layout_constraintEnd_toEndOf="@id/book_title"
+                app:layout_constraintStart_toStartOf="@id/book_title"
+                app:layout_constraintTop_toBottomOf="@id/book_author">
+
+                <TextView
+                    android:id="@+id/book_category"
+                    style="@style/BookInfoChip"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{book.volumeInfo.categories.get(0)}"
+                    android:visibility="@{book.volumeInfo.categories.get(0) != null ? View.VISIBLE : View.GONE}"
+                    tools:text="Poetry" />
+
+                <TextView
+                    android:id="@+id/book_format"
+                    style="@style/BookInfoChip"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_weight="0.7"
+                    android:text="@{book.volumeInfo.printType}"
+                    app:layout_constraintBottom_toBottomOf="@id/book_category"
+                    app:layout_constraintEnd_toStartOf="@id/book_pages"
+                    app:layout_constraintStart_toEndOf="@id/book_category"
+                    app:layout_constraintTop_toTopOf="@id/book_category"
+                    tools:text="Book" />
+
+                <TextView
+                    android:id="@+id/book_pages"
+                    style="@style/BookInfoChip"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_weight="0.7"
+                    android:text="@{@string/page_count(book.volumeInfo.pageCount)}"
+                    app:layout_constraintBottom_toBottomOf="@id/book_category"
+                    app:layout_constraintEnd_toEndOf="@id/book_title"
+                    app:layout_constraintTop_toTopOf="@id/book_category"
+                    tools:text="260 pages" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/description_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/medium_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/book_info_layout">
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/medium_margin"
+                    android:text="Description" />
+
+                <TextView
+                    android:id="@+id/book_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:htmlText="@{book.volumeInfo.description}" />
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

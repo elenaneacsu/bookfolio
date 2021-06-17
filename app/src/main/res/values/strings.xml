@@ -34,5 +34,8 @@
     <string name="currently_reading_shelf">Currently reading</string>
     <string name="search_hint">Search title, author or ISBN</string>
 
+    <!-- Book details region -->
+    <string name="page_count">%1$d pages</string>
+    <string name="no_description_available">This book does not have a description</string>
 
 </resources>

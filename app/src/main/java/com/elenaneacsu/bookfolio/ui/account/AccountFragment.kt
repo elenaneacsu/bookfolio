@@ -18,26 +18,22 @@ class AccountFragment : BaseMvvmFragment<AccountViewModel, FragmentAccountBindin
     override fun initViews() {
         super.initViews()
 
-        viewBinding.signOut.setOnClickListener {
+        viewBinding.logOut.setOnClickListener {
             viewModel.signOut()
             activity?.startActivityWithFlags(AuthActivity::class.java)
         }
     }
 
     override fun hideProgress() {
-        TODO("Not yet implemented")
     }
 
     override fun showProgress() {
-        TODO("Not yet implemented")
     }
 
     override fun errorAlert(message: String) {
-        TODO("Not yet implemented")
     }
 
     override fun successAlert(message: String) {
-        TODO("Not yet implemented")
     }
 
 }

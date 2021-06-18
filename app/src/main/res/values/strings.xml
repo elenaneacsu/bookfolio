@@ -38,4 +38,14 @@
     <string name="page_count">%1$d pages</string>
     <string name="no_description_available">This book does not have a description</string>
 
+    <!-- Quotes region -->
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+
+    <!-- Account region -->
+    <string name="log_out">Log out</string>
+    <string name="detele_account">Detele account</string>
+    <string name="edit_name">Edit name</string>
+    <string name="or">or</string>
+
 </resources>

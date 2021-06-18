@@ -222,6 +222,17 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/journal_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="@style/RoundedButton"
+                android:text="My book journal"
+                app:layout_constraintStart_toStartOf="@id/book_title"
+                app:layout_constraintEnd_toEndOf="@id/book_title"
+                app:layout_constraintTop_toBottomOf="@id/description_layout"
+                android:layout_marginBottom="@dimen/medium_margin"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

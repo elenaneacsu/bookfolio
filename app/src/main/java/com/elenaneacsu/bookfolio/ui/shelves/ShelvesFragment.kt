@@ -102,7 +102,6 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     }
 
     override fun onBookClicked(book: Item) {
-        TODO("Not yet implemented")
     }
 
     override fun hideProgress() {

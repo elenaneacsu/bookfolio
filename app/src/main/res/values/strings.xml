@@ -22,7 +22,7 @@
 
     <!-- Bottom Navigation Items -->
     <string name="shelves">Shelves</string>
-    <string name="quotes">Quotes</string>
+    <string name="favourites">Favourites</string>
     <string name="discover">Discover</string>
     <string name="account">Account</string>
 

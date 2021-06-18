@@ -18,9 +18,14 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : BaseViewModel(resourceString, coroutineContextProvider) {
 
-    val email = MutableLiveData("test@test.com")
-    val password = MutableLiveData("123456")
-    val name = MutableLiveData("Test Name")
+//    val email = MutableLiveData("test@test.com")
+    val email = MutableLiveData<String>()
+
+//    val password = MutableLiveData("123456")
+    val password = MutableLiveData<String>()
+
+//    val name = MutableLiveData("Test Name")
+    val name = MutableLiveData<String>()
 
     private val _loginResult = MutableLiveData<BookfolioResult<String>>()
     val loginResult: LiveData<BookfolioResult<String>>

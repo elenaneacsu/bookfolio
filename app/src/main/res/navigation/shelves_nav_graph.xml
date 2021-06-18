@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shelves_nav_graph"
+    app:startDestination="@id/shelvesFragment">
+
+    <fragment
+        android:id="@+id/shelvesFragment"
+        android:name="com.elenaneacsu.bookfolio.ui.shelves.ShelvesFragment"
+        android:label="ShelvesFragment">
+        <action
+            android:id="@+id/action_shelvesFragment_to_shelfFragment"
+            app:destination="@id/shelfFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/shelfFragment"
+        android:name="com.elenaneacsu.bookfolio.ui.shelves.shelf.ShelfFragment"
+        android:label="ShelfFragment">
+        <argument
+            android:name="shelf"
+            app:argType="com.elenaneacsu.bookfolio.models.Shelf"
+            app:nullable="true" />
+    </fragment>
+</navigation>

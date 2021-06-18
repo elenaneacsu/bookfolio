@@ -5,19 +5,19 @@
         android:id="@+id/navigation_group"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/shelves"
+            android:id="@+id/shelves_nav_graph"
             android:icon="@drawable/ic_navigation_shelves_24dp"
             android:title="@string/shelves" />
         <item
-            android:id="@+id/quotes"
+            android:id="@+id/favourites_nav_graph"
             android:icon="@drawable/ic_navigation_quotes_24dp"
-            android:title="@string/quotes" />
+            android:title="@string/favourites" />
         <item
-            android:id="@+id/discover"
+            android:id="@+id/search_nav_graph"
             android:icon="@drawable/ic_navigation_discover_24dp"
             android:title="@string/discover" />
         <item
-            android:id="@+id/account"
+            android:id="@+id/account_nav_graph"
             android:icon="@drawable/ic_navigation_account_24dp"
             android:title="@string/account" />
     </group>

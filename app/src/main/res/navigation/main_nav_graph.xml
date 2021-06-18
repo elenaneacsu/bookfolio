@@ -2,46 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/shelvesFragment">
+    app:startDestination="@id/shelves_nav_graph">
 
-    <fragment
-        android:id="@+id/shelvesFragment"
-        android:name="com.elenaneacsu.bookfolio.ui.shelves.ShelvesFragment"
-        android:label="ShelvesFragment">
-        <action
-            android:id="@+id/action_shelvesFragment_to_shelfFragment"
-            app:destination="@id/shelfFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/accountFragment"
-        android:name="com.elenaneacsu.bookfolio.ui.account.AccountFragment"
-        android:label="AccountFragment" />
-    <fragment
-        android:id="@+id/shelfFragment"
-        android:name="com.elenaneacsu.bookfolio.ui.shelves.shelf.ShelfFragment"
-        android:label="ShelfFragment">
-        <argument
-            android:name="shelf"
-            app:argType="com.elenaneacsu.bookfolio.models.Shelf"
-            app:nullable="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.elenaneacsu.bookfolio.ui.search.SearchFragment"
-        android:label="SearchFragment">
-        <action
-            android:id="@+id/action_searchFragment_to_bookDetailsFragment"
-            app:destination="@id/bookDetailsFragment"
-            app:popUpTo="@id/searchFragment"/>
-    </fragment>
-    <fragment
-        android:id="@+id/bookDetailsFragment"
-        android:name="com.elenaneacsu.bookfolio.ui.search.book_details.BookDetailsFragment"
-        android:label="BookDetailsFragment">
-        <argument
-            android:name="book"
-            app:argType="com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse" />
-    </fragment>
-
+    <include app:graph="@navigation/shelves_nav_graph" />
+    <include app:graph="@navigation/favourites_nav_graph" />
+    <include app:graph="@navigation/search_nav_graph" />
+    <include app:graph="@navigation/account_nav_graph" />
 
 </navigation>

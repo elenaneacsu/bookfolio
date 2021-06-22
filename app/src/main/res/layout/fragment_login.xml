@@ -136,7 +136,6 @@
                     android:text="@string/continue_with_google"
                     android:drawableLeft="@drawable/ic_google_logo"/>
 
-
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

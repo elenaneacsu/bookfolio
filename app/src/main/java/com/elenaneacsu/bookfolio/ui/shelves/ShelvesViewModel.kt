@@ -33,6 +33,12 @@ class ShelvesViewModel @Inject constructor(
         val shelves = mutableListOf<Shelf>()
         for (docSnapshot in docSnapshotsList) {
             docSnapshot?.toObject(Shelf::class.java)?.let {
+                if(it.name?.equals("To read", ignoreCase = true) == true)
+                    it.numberOfBooks = 10
+                else if (it.name?.equals("Read", ignoreCase = true) == true)
+                    it.numberOfBooks = 5
+                else
+                    it.numberOfBooks = 2
                 shelves.add(it)
             }
         }

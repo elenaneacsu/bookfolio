@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.request.RequestOptions
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.CurrentlyReadingLayoutBinding
+import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.recycler_view.BaseAdapter
 import com.elenaneacsu.bookfolio.recycler_view.BaseViewHolder
@@ -17,7 +18,7 @@ import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 class CurrentlyReadingBookAdapter(
     private val context: Context,
     private val itemClickListener: OnItemClickListener
-) : BaseAdapter<Item, CurrentlyReadingBookAdapter.CurrentlyReadingBookViewHolder>(context),
+) : BaseAdapter<UserBook, CurrentlyReadingBookAdapter.CurrentlyReadingBookViewHolder>(context),
     BaseViewHolder.OnItemClickListener {
 
     override fun onCreateViewHolder(
@@ -34,8 +35,8 @@ class CurrentlyReadingBookAdapter(
 
     override fun onBindViewHolder(holder: CurrentlyReadingBookViewHolder, position: Int) {
         holder.bindItem(_items[position])
-        if (_items[position].volumeInfo?.imageLinks?.smallThumbnail != null) {
-            val image = _items[position].volumeInfo?.imageLinks?.smallThumbnail
+        if (_items[position].item?.volumeInfo?.imageLinks?.smallThumbnail != null) {
+            val image = _items[position].item?.volumeInfo?.imageLinks?.smallThumbnail
             GlideApp.with(context)
                 .load(image)
                 .apply(RequestOptions())
@@ -55,16 +56,16 @@ class CurrentlyReadingBookAdapter(
     }
 
     interface OnItemClickListener {
-        fun onBookClicked(book: Item)
+        fun onBookClicked(book: UserBook)
     }
 
     class CurrentlyReadingBookViewHolder(
         val itemBinding: CurrentlyReadingLayoutBinding,
         private val itemClickListener: OnItemClickListener,
-    ) : BaseViewHolder<Item, CurrentlyReadingLayoutBinding>(itemBinding) {
+    ) : BaseViewHolder<UserBook, CurrentlyReadingLayoutBinding>(itemBinding) {
 
-        override fun bindItem(item: Item) {
-            itemBinding.book = item.volumeInfo
+        override fun bindItem(item: UserBook) {
+            itemBinding.book = item.item?.volumeInfo
             itemBinding.executePendingBindings()
 
             itemBinding.constraintContainer.setOnOneOffClickListener {

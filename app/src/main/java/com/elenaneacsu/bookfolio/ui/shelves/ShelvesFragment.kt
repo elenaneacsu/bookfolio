@@ -8,6 +8,7 @@ import com.elenaneacsu.bookfolio.databinding.FragmentShelvesBinding
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.getThemeColor
 import com.elenaneacsu.bookfolio.models.Shelf
+import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.models.google_books_api_models.ImageLinks
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeInfo
@@ -101,8 +102,9 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
         findNavController().navigate(direction)
     }
 
-    override fun onBookClicked(book: Item) {
-//        TODO("Not yet implemented")
+    override fun onBookClicked(book: UserBook) {
+//        val direction = ShelvesFragmentDirections.actionS
+//        findNavController().navigate(direction)
     }
 
     override fun hideProgress() {
@@ -120,17 +122,21 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     }
 
     private fun mockData() {
-        val book1 = Item(
-            volumeInfo = VolumeInfo(
-                title = "You Get So Alone At Times", authors = listOf("Charles Bukowski"),
-                imageLinks = ImageLinks("http://books.google.com/books/content?id=j_ktEg3xESoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
+        val book1 = UserBook(
+            item = Item(
+                volumeInfo = VolumeInfo(
+                    title = "You Get So Alone At Times", authors = listOf("Charles Bukowski"),
+                    imageLinks = ImageLinks("http://books.google.com/books/content?id=j_ktEg3xESoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
+                )
             )
         )
 
-        val book2 = Item(
-            volumeInfo = VolumeInfo(
-                title = "A Streetcar Named Desire", authors = listOf("Tennessee Williams"),
-                imageLinks = ImageLinks("http://books.google.com/books/content?id=-qO2F_suXzwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
+        val book2 = UserBook(
+            item = Item(
+                volumeInfo = VolumeInfo(
+                    title = "A Streetcar Named Desire", authors = listOf("Tennessee Williams"),
+                    imageLinks = ImageLinks("http://books.google.com/books/content?id=-qO2F_suXzwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
+                )
             )
         )
         currentlyReadingAdapter?.add(listOf(book1, book2))

@@ -2,7 +2,11 @@ package com.elenaneacsu.bookfolio.ui.favourites
 
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentFavouritesBinding
+import com.elenaneacsu.bookfolio.extensions.alert
+import com.elenaneacsu.bookfolio.extensions.negativeButton
+import com.elenaneacsu.bookfolio.extensions.positiveButton
 import com.elenaneacsu.bookfolio.models.Quote
+import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,6 +29,10 @@ class FavouritesFragment: BaseMvvmFragment<FavouritesViewModel, FragmentFavourit
 
         viewBinding.quotesRecyclerView.adapter = quotesAdapter
         mockData()
+
+        viewBinding.temporaryFab.setOnOneOffClickListener {
+            showDialogToAddQuote()
+        }
     }
 
     override fun hideProgress() {
@@ -79,10 +87,40 @@ class FavouritesFragment: BaseMvvmFragment<FavouritesViewModel, FragmentFavourit
         val quote6 = Quote("In the state I was in, if someone had come and told me I could go home quietly, that they would leave me my life whole, it would have left me cold: several hours or several years of waiting is all the same when you have lost the illusion of being eternal.",
         "The Wall", "Jean-Paul Sartre", "page 87", "January 20, 2021")
 
-        val quotes = listOf(quote1, quote2, quote3, quote4, quote5, quote6)
+        val quote7 = Quote("some men never\n" +
+                "die\n" +
+                "and some men never\n" +
+                "live\n" +
+                "\n" +
+                "but we're all alive\n" +
+                "tonight.", page = "page 23", date = "June 18, 2021")
+
+        val quote8 = Quote("each man's hell is in a different\n" +
+                "place: mine is just up and\n" +
+                "behind\n" +
+                "my ruined\n" +
+                "face.", page = "page 23", date = "June 15, 2021")
+//        val quotes = listOf(quote1, quote2, quote3, quote4, quote5, quote6)
+        val quotes = listOf(quote4, quote7, quote8)
+
 
         quotesAdapter?.add(quotes)
         quotesAdapter?.notifyDataSetChanged()
+    }
 
+    private fun showDialogToAddQuote() {
+        context?.let { ctx ->
+            ctx.alert(cancelable = true, style = R.style.AlertDialogStyle) {
+                setView(R.layout.add_quote_dialog_layout)
+
+                positiveButton("Save") {
+
+                }
+
+                negativeButton("Cancel") {
+
+                }
+            }
+        }
     }
 }

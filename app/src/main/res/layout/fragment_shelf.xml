@@ -35,30 +35,25 @@
                 app:theme="@style/Toolbar" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <Button
-            android:id="@+id/test_button"
-            style="@style/RoundedButton"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/pull_to_refresh"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="make request"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
-        <!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-        <!--            android:id="@+id/pull_to_refresh"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="0dp"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/app_bar_layout">-->
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/recycler_view_margin_top"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!--            <androidx.recyclerview.widget.RecyclerView-->
-        <!--                android:id="@+id/books_recycler_view"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="match_parent"-->
-        <!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
-        <!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/books_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/large_padding"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

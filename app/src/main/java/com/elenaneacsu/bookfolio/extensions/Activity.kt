@@ -202,7 +202,7 @@ fun <T> Application.startActivityWithFlags(`class`: Class<T>) {
  *
  * @param `class` - class of the activity to start
  */
-fun <T> AppCompatActivity.startActivity(`class`: Class<T>) {
+fun <T> AppCompatActivity.startActivityNormal(`class`: Class<T>) {
     val intent = Intent(this, `class`)
     startActivity(intent)
 }

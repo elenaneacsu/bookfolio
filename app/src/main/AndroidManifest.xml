@@ -27,6 +27,8 @@
         <activity
             android:name=".ui.MainActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".ui.SplashActivity" />
     </application>
 
 </manifest>

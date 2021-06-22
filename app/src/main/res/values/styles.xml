@@ -27,4 +27,8 @@
         <item name="backgroundTint">?colorAccent</item>
         <item name="android:singleLine">true</item>
     </style>
+
+    <style name="AlertDialogStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/primary</item>
+    </style>
 </resources>

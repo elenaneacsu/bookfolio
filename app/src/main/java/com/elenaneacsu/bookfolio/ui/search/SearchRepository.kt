@@ -17,6 +17,6 @@ class SearchRepository @Inject constructor(private val retrofitRequests: Retrofi
         return response.items
     }
 
-    suspend fun getBooksDetails(id: String): FullItemResponse? =
+    suspend fun getBooksDetails(id: String): FullItemResponse =
         retrofitRequests.getSingleVolume(id)
     }

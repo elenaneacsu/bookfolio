@@ -32,3 +32,9 @@ fun String.stringToDate(dateFormat: Format, locale: Locale = Locale.ENGLISH): Da
     }
 
 }
+
+fun Long.toStringDate(dateFormat: Format = Format.FORMAT8, locale: Locale = Locale.ENGLISH): String {
+    val date = Date(this)
+    val simpleDateFormat = SimpleDateFormat("dd/MM/yy")
+    return simpleDateFormat.format(date)
+}

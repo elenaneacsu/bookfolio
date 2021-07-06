@@ -103,7 +103,7 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     }
 
     override fun onBookClicked(book: UserBook) {
-//        val direction = ShelvesFragmentDirections.actionS
+//        val direction = ShelvesFragmentDirections.actionShelvesFragmentToBookDetailsFragment()
 //        findNavController().navigate(direction)
     }
 

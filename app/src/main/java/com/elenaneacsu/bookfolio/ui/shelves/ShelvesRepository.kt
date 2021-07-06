@@ -1,9 +1,7 @@
 package com.elenaneacsu.bookfolio.ui.shelves
 
-import com.elenaneacsu.bookfolio.utils.Constants.Companion.CURRENTLY_READING_COLLECTION
+import com.elenaneacsu.bookfolio.models.ShelfType
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.NUMBER_OF_BOOKS
-import com.elenaneacsu.bookfolio.utils.Constants.Companion.READ_COLLECTION
-import com.elenaneacsu.bookfolio.utils.Constants.Companion.TO_READ_COLLECTION
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.Dispatchers
@@ -29,20 +27,22 @@ class ShelvesRepository @Inject constructor() : BaseRepository() {
         val delay = async(Dispatchers.IO) { delay(500) }
 
 
-        return awaitAll(toReadShelf, currentlyReadingShelf, readShelf, delay).filterIsInstance(DocumentSnapshot::class.java)
+        return awaitAll(toReadShelf, currentlyReadingShelf, readShelf, delay).filterIsInstance(
+            DocumentSnapshot::class.java
+        )
     }
 
     private suspend fun getToReadCollection() =
         getMainDocumentOfRegisteredUser()
-            ?.collection(TO_READ_COLLECTION)
+            ?.collection(ShelfType.TO_READ.valueAsString)
             ?.document(NUMBER_OF_BOOKS)?.get()?.await()
 
     private suspend fun getCurrentlyReadingCollection() = getMainDocumentOfRegisteredUser()
-        ?.collection(CURRENTLY_READING_COLLECTION)
+        ?.collection(ShelfType.CURRENTLY_READING.valueAsString)
         ?.document(NUMBER_OF_BOOKS)?.get()?.await()
 
     private suspend fun getReadCollection() = getMainDocumentOfRegisteredUser()
-        ?.collection(READ_COLLECTION)
+        ?.collection(ShelfType.READ.valueAsString)
         ?.document(NUMBER_OF_BOOKS)?.get()?.await()
 
 }

@@ -1,5 +1,6 @@
 package com.elenaneacsu.bookfolio.extensions
 
+import android.content.DialogInterface
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
@@ -12,6 +13,9 @@ import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.ui.search.book_details.ShelfOptionsAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.datepicker.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * show toast method
@@ -63,4 +67,44 @@ fun Fragment.createBottomSheetDialog(view: View,
             setCancelable(true)
         }
     }
+
+fun Fragment.showMaterialDatePicker(
+    isConstrained: Boolean = false,
+    onCancelListener: DialogInterface.OnCancelListener,
+    onPositiveButtonClickListener: MaterialPickerOnPositiveButtonClickListener<Long>,
+) {
+    val materialDatePicker =
+        if (isConstrained) {
+            val calendarStart = Calendar.getInstance()
+            calendarStart.set(1900, 0, 0) // 1/1/1900
+            val dateValidatorMin: CalendarConstraints.DateValidator =
+                DateValidatorPointForward.from(calendarStart.timeInMillis)
+            val dateValidatorMax: CalendarConstraints.DateValidator =
+                DateValidatorPointBackward.before(System.currentTimeMillis())
+            val listValidators = ArrayList<CalendarConstraints.DateValidator>()
+            listValidators.add(dateValidatorMin)
+            listValidators.add(dateValidatorMax)
+            val validators = CompositeDateValidator.allOf(listValidators)
+            MaterialDatePicker.Builder
+                .datePicker()
+                .setCalendarConstraints(
+                    CalendarConstraints.Builder()
+                        .setValidator(validators)
+                        .build()
+                )
+                .build()
+        } else {
+            val today = Calendar.getInstance()
+            MaterialDatePicker.Builder
+                .datePicker()
+                .setSelection(today.timeInMillis)
+                .build()
+        }
+    materialDatePicker.addOnCancelListener(onCancelListener)
+    materialDatePicker.addOnNegativeButtonClickListener {
+        materialDatePicker.dismiss()
+    }
+    materialDatePicker.addOnPositiveButtonClickListener(onPositiveButtonClickListener)
+    materialDatePicker.show(childFragmentManager, materialDatePicker.toString())
+}
 

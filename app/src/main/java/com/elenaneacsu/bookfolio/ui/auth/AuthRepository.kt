@@ -37,7 +37,9 @@ class AuthRepository @Inject constructor() : BaseRepository() {
         }
     }
 
-    suspend fun forgotPassword(email:String) = auth.sendPasswordResetEmail(email).await()
+    suspend fun forgotPassword(email:String) {
+        auth.sendPasswordResetEmail(email).await()
+    }
 
     private suspend fun createCollections() {
         val isCurrentlyReadingColCreated =
@@ -52,7 +54,7 @@ class AuthRepository @Inject constructor() : BaseRepository() {
         auth.currentUser?.let {
             firestore.collection(USERS_COLLECTION)
                 .document(it.uid)
-                .collection(CURRENTLY_READING_COLLECTION)
+                .collection(ShelfType.CURRENTLY_READING.valueAsString)
                 .document(NUMBER_OF_BOOKS)
                 .set(setUpShelfDoc(ShelfType.CURRENTLY_READING))
                 .await()
@@ -62,7 +64,7 @@ class AuthRepository @Inject constructor() : BaseRepository() {
         auth.currentUser?.let {
             firestore.collection(USERS_COLLECTION)
                 .document(it.uid)
-                .collection(TO_READ_COLLECTION)
+                .collection(ShelfType.TO_READ.valueAsString)
                 .document(NUMBER_OF_BOOKS)
                 .set(setUpShelfDoc(ShelfType.TO_READ))
                 .await()
@@ -72,7 +74,7 @@ class AuthRepository @Inject constructor() : BaseRepository() {
         auth.currentUser?.let {
             firestore.collection(USERS_COLLECTION)
                 .document(it.uid)
-                .collection(READ_COLLECTION)
+                .collection(ShelfType.READ.valueAsString)
                 .document(NUMBER_OF_BOOKS)
                 .set(setUpShelfDoc(ShelfType.READ))
                 .await()

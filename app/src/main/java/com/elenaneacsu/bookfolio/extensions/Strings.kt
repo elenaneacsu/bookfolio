@@ -28,28 +28,6 @@ fun String?.isValidEmail(): Boolean {
 }
 
 /**
- * Validate age if it's bigger than @DEFAULT_MIN_AGE and lower than @DEFAULT_MAX_AGE
- *
- * @throws NumberFormatException if String is not a number
- * @return - the state of the age, if is valid or not
- */
-fun String.isValidAge(minAge: Int = 15, maxAge: Int = 99): Boolean {
-    val i: Int
-
-    try {
-        i = Integer.parseInt(this)
-        if (i < minAge || i > maxAge) {
-            return false
-        }
-    } catch (e: NumberFormatException) {
-        return false
-    }
-
-    return true
-}
-
-
-/**
  * Validate phone number if match format (10 digits), where "text" could be anything
  *
  * @return - the state of the phone number, if is valid or not
@@ -63,27 +41,6 @@ fun String?.isValidPhoneNumber(): Boolean {
 fun String?.isValidPassword(): Boolean {
     return this != null && !TextUtils.isEmpty(this)
 }
-/*fun String?.isValidPassword(): Boolean {
-    *//**
-This pattern matches password validation for having 3 of 4 of the following items:
-lower case
-upper case
-numbers special
-characters
-at least 8 characters - password min length according to Magento settings
-
-^ # beginning of line anchor
-((?=.*[\d]) #check for digits
-(?=.*[a-z]) #check for lower case
-(?=.*[A-Z]) #check for upper case
-|(?=.*[a-z]) (?=.*[A-Z]) (?=.*[^\w\d\s]) #check for special chars
-|(?=.*[\d]) (?=.*[A-Z]) (?=.*[^\w\d\s])|(?=.*[\d]) (?=.*[a-z]) (?=.*[^\w\d\s])).{7,} - match any character from 8 start char at the end of line anchor
- **//*
-
-    val regexPasswordPattern =
-        "^((?=.*[\\d])(?=.*[a-z])(?=.*[A-Z])|(?=.*[a-z])(?=.*[A-Z])(?=.*[^\\w\\d\\s])|(?=.*[\\d])(?=.*[A-Z])(?=.*[^\\w\\d\\s])|(?=.*[\\d])(?=.*[a-z])(?=.*[^\\w\\d\\s])).{8,}\$".toRegex()
-    return this != null && !TextUtils.isEmpty(this) && this.matches(regexPasswordPattern)
-}*/
 
 fun String?.isValidName(): Boolean {
     return this != null && !TextUtils.isEmpty(this) && this.length > NAME_MIN_LENGTH
@@ -91,10 +48,6 @@ fun String?.isValidName(): Boolean {
 
 fun String?.isValidField(): Boolean {
     return this != null && !TextUtils.isEmpty(this) && this.length > NAME_MIN_LENGTH
-}
-
-fun String?.isValidResetCode(): Boolean {
-    return this != null && !TextUtils.isEmpty(this) && this.length == RESET_CODE_LENGTH
 }
 
 fun String?.isPasswordTheSameAs(retypedPassword: String?): List<PasswordErrors> {

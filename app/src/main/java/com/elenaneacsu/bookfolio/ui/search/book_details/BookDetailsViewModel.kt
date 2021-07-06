@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
 import com.elenaneacsu.bookfolio.models.Shelf
+import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
-import com.elenaneacsu.bookfolio.ui.search.SearchRepository
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
@@ -22,11 +22,16 @@ class BookDetailsViewModel @Inject constructor(
     coroutineContextProvider: CoroutineContextProvider,
     private val repository: BookDetailsRepository
 ) : BaseViewModel(
-    resourceString, coroutineContextProvider) {
+    resourceString, coroutineContextProvider
+) {
 
     private val _shelvesResult = MutableLiveData<Result<List<Shelf>>>()
     val shelvesResult: LiveData<Result<List<Shelf>>>
         get() = _shelvesResult
+
+    private val _addBookResult = MutableLiveData<Result<Void>>()
+    val addBookResult: LiveData<Result<Void>>
+        get() = _addBookResult
 
     fun getShelves() = makeRequest(resourceString, ioContext, _shelvesResult) {
         _shelvesResult.postValue(Result.loading())
@@ -38,5 +43,11 @@ class BookDetailsViewModel @Inject constructor(
             }
         }
         _shelvesResult.postValue(Result.success(shelves))
+    }
+
+    fun addBookIntoShelf(book: Item, shelf: Shelf) = makeRequest(resourceString, ioContext, _addBookResult) {
+        _addBookResult.postValue(Result.loading())
+        repository.addBookIntoShelf(UserBook(item = book, startDate = "June 21, 2021"), shelf)
+        _addBookResult.postValue(Result.success())
     }
 }

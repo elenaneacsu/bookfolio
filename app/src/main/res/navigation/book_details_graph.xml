@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/book_details"
+    app:startDestination="@id/bookDetailsFragment">
+    <fragment
+        android:id="@+id/bookDetailsFragment"
+        android:name="com.elenaneacsu.bookfolio.ui.search.book_details.BookDetailsFragment"
+        android:label="BookDetailsFragment">
+        <argument
+            android:name="book"
+            app:argType="com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="userSavedBook"
+            app:argType="com.elenaneacsu.bookfolio.models.UserBook"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+</navigation>

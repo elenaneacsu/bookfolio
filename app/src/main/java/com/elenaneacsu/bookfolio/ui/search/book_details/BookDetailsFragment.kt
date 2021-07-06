@@ -12,16 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentBookDetailsBinding
-import com.elenaneacsu.bookfolio.extensions.Result
-import com.elenaneacsu.bookfolio.extensions.createBottomSheetDialog
-import com.elenaneacsu.bookfolio.extensions.toast
-import com.elenaneacsu.bookfolio.extensions.updateStatusBarColor
+import com.elenaneacsu.bookfolio.extensions.*
 import com.elenaneacsu.bookfolio.models.Shelf
+import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse
+import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.ui.shelves.shelf.ShelfFragmentArgs
+import com.elenaneacsu.bookfolio.utils.date.toStringDate
 import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -32,6 +33,10 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
     BaseMvvmFragment<BookDetailsViewModel, FragmentBookDetailsBinding>(
     R.layout.fragment_book_details, BookDetailsViewModel::class.java
 ) {
+
+    private var book: Item? = null
+    private var userSavedBook: UserBook? = null
+    private var bottomSheetDialog: BottomSheetDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,14 +57,36 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
 
         val args = BookDetailsFragmentArgs.fromBundle(bundle)
         viewBinding.book = args.book
+        viewBinding.userSavedBook = args.userSavedBook
+
+        book = Item(args.book?.id, args.book?.volumeInfo)
+        userSavedBook = args.userSavedBook
     }
 
     override fun initViews() {
         super.initViews()
 
-        viewBinding.fabShelves.setOnOneOffClickListener {
-            viewModel.getShelves()
+        viewBinding.apply {
+            fabShelves.setOnOneOffClickListener {
+                viewModel.getShelves()
+            }
+
+            startDateIcon.setOnOneOffClickListener {
+                showMaterialDatePicker(false, {
+                    it.dismiss()
+                }, {
+                    val formattedDate = it.toStringDate()
+                    startDate.text = formattedDate
+                })
+            }
+
+            endDateIcon.setOnOneOffClickListener {
+                showMaterialDatePicker(false, {it.dismiss()}, {
+                    endDate.text = it.toStringDate()
+                })
+            }
         }
+
     }
 
     override fun initObservers() {
@@ -71,6 +98,21 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
                 Result.Status.SUCCESS -> {
                     hideProgress()
                     it.data?.let { shelves -> showShelvesDialog(shelves) }
+                }
+                Result.Status.ERROR -> {
+                    hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
+
+        viewModel.addBookResult.observe(viewLifecycleOwner, {
+            when(it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    bottomSheetDialog?.dismiss()
+                    hideProgress()
+                    successAlert("Book successfully added")
                 }
                 Result.Status.ERROR -> {
                     hideProgress()
@@ -92,15 +134,16 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
     }
 
     override fun successAlert(message: String) {
+        toast(message)
     }
 
     override fun onShelfOptionClicked(shelf: Shelf) {
-        shelf.name?.let { toast(it, Toast.LENGTH_LONG) }
+        book?.let { viewModel.addBookIntoShelf(it, shelf) }
     }
 
     private fun showShelvesDialog(shelves: List<Shelf>) {
         val sheetView = requireActivity().layoutInflater.inflate(R.layout.bottom_sheet_options_dialog, null)
-        val bottomSheetDialog = createBottomSheetDialog(sheetView, "Add this book into shelf")
+        bottomSheetDialog = createBottomSheetDialog(sheetView, "Add this book into shelf")
 
         val adapter = ShelfOptionsAdapter(requireContext(), this)
         adapter.add(shelves)

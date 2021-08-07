@@ -16,5 +16,9 @@ data class Shelf(
 enum class ShelfType(val valueAsString: String) {
     CURRENTLY_READING("Currently reading"),
     TO_READ("To read"),
-    READ("Read")
+    READ("Read");
+
+    companion object {
+        fun getShelfType(value: String) = values().firstOrNull { it.valueAsString == value }
+    }
 }

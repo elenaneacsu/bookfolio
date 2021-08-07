@@ -5,20 +5,13 @@
 
     <data>
 
-        <import type="com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse" />
-
-        <import type="com.elenaneacsu.bookfolio.models.UserBook" />
-
+        <import type="com.elenaneacsu.bookfolio.models.BookDetailsMapper" />
 
         <import type="android.view.View" />
 
         <variable
             name="book"
-            type="FullItemResponse" />
-
-        <variable
-            name="userSavedBook"
-            type="UserBook" />
+            type="BookDetailsMapper" />
     </data>
 
     <ScrollView
@@ -88,7 +81,7 @@
                 android:id="@+id/book_cover"
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
-                app:imageUrl="@{book.volumeInfo.imageLinks.thumbnail}"
+                app:imageUrl="@{book.getCover()}"
                 app:layout_constraintBottom_toBottomOf="@id/helper_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +108,7 @@
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/large_margin"
-                android:text="@{book.volumeInfo.title}"
+                android:text="@{book.getTitle()}"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -130,11 +123,11 @@
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/large_margin"
-                android:text="@{book.volumeInfo.subtitle}"
+                android:text="@{book.getSubtitle()}"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="italic"
-                android:visibility="@{book.volumeInfo.subtitle != null ? View.VISIBLE : View.GONE}"
+                android:visibility="@{book.getSubtitle() != null ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/book_title"
@@ -148,7 +141,7 @@
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/large_margin"
-                android:text="@{book.volumeInfo.authors.get(0)}"
+                android:text="@{book.getAuthors()}"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -172,8 +165,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@{book.volumeInfo.categories.get(0)}"
-                    android:visibility="@{book.volumeInfo.categories.get(0) != null ? View.VISIBLE : View.GONE}"
+                    android:text="@{book.getCategories()}"
+                    android:visibility="@{book.getCategories() != null ? View.VISIBLE : View.GONE}"
                     tools:text="Poetry" />
 
                 <TextView
@@ -183,7 +176,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/small_margin"
                     android:layout_weight="0.7"
-                    android:text="@{book.volumeInfo.printType}"
+                    android:text="@{book.getPrintType()}"
+                    android:visibility="@{book.getPrintType() != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/book_category"
                     app:layout_constraintEnd_toStartOf="@id/book_pages"
                     app:layout_constraintStart_toEndOf="@id/book_category"
@@ -197,7 +191,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/small_margin"
                     android:layout_weight="0.7"
-                    android:text="@{@string/page_count(book.volumeInfo.pageCount)}"
+                    android:text="@{@string/page_count(book.getPageCount())}"
+                    android:visibility="@{book.getPageCount() != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/book_category"
                     app:layout_constraintEnd_toEndOf="@id/book_title"
                     app:layout_constraintTop_toTopOf="@id/book_category"
@@ -225,7 +220,7 @@
                     android:id="@+id/book_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:htmlText="@{book.volumeInfo.description}" />
+                    app:htmlText="@{book.getDescription()}" />
 
             </LinearLayout>
 
@@ -234,6 +229,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_margin"
+                android:visibility="@{book.getStartDate() != null ? View.VISIBLE : View.GONE}"
                 app:layout_constraintTop_toBottomOf="@id/description_layout">
 
                 <ImageView
@@ -251,13 +247,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/medium_margin"
+                    android:text="@{book.getStartDate()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/start_date_icon"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="May 21, 2021" />
-<!--                android:visibility="@{userSavedBook != null ? View.VISIBLE : View.GONE}"-->
-                <!--                android:text="@{userSavedBook.startDate}"-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -265,6 +260,7 @@
                 android:id="@+id/end_date_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="@{book.getEndDate() != null ? View.VISIBLE : View.GONE}"
                 app:layout_constraintTop_toBottomOf="@id/start_date_layout">
 
                 <ImageView
@@ -282,7 +278,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/medium_margin"
-                    android:text="Not yet finished"
+                    android:text="@{book.getEndDate()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/end_date_icon"
@@ -296,6 +292,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/large_margin"
                 android:text="My book journal"
+                android:visibility="@{book.areQuotesAvailable() == true ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/book_title"
                 app:layout_constraintStart_toStartOf="@id/book_title"

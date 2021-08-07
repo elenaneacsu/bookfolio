@@ -7,7 +7,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -24,8 +23,6 @@ class ShelvesRepository @Inject constructor() : BaseRepository() {
         val readShelf = async(Dispatchers.IO) {
             getReadCollection()
         }
-        val delay = async(Dispatchers.IO) { delay(500) }
-
 
         return awaitAll(toReadShelf, currentlyReadingShelf, readShelf, delay).filterIsInstance(
             DocumentSnapshot::class.java

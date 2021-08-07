@@ -1,11 +1,12 @@
 package com.elenaneacsu.bookfolio.ui.shelves.shelf
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
-import com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeInfo
+import com.elenaneacsu.bookfolio.models.Shelf
+import com.elenaneacsu.bookfolio.models.ShelfType
+import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
@@ -22,16 +23,17 @@ class ShelfViewModel @Inject constructor(
     private val repository: ShelfRepository
 ) : BaseViewModel(resourceString, coroutineContextProvider) {
 
-    private val _mla = MutableLiveData<Result<List<VolumeInfo>>>()
-    val mla: LiveData<Result<List<VolumeInfo>>>
-        get() = _mla
+    private val _booksInShelfResult = MutableLiveData<Result<List<UserBook>>>()
+    val booksInShelfResult: LiveData<Result<List<UserBook>>>
+        get() = _booksInShelfResult
 
-    fun makeTestRequest(searchTerm: String) = makeRequest(resourceString, ioContext, _mla) {
-        val items = repository.searchBooks(searchTerm)
-        if (items != null) {
-            for (item in items) {
-                Log.d("TAG", "makeTestRequest: " + item.volumeInfo?.title)
-            }
+    fun getBooks(shelf: Shelf) = makeRequest(resourceString, ioContext, _booksInShelfResult) {
+        _booksInShelfResult.postValue(Result.loading())
+
+        val books = ShelfType.getShelfType(shelf.name!!)?.let { shelfType ->
+            repository.getBooksInShelf(shelfType)
         }
+
+        _booksInShelfResult.postValue(Result.success(books))
     }
 }

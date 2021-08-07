@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shelves_nav_graph"
     app:startDestination="@id/shelvesFragment">
+    <include app:graph="@navigation/book_details_graph" />
 
     <fragment
         android:id="@+id/shelvesFragment"
@@ -12,13 +13,21 @@
             android:id="@+id/action_shelvesFragment_to_shelfFragment"
             app:destination="@id/shelfFragment" />
         <action
-            android:id="@+id/action_shelvesFragment_to_bookDetailsFragment"
-            app:destination="@id/bookDetailsFragment">
+            android:id="@+id/action_shelvesFragment_to_book_details"
+            app:destination="@id/book_details">
             <argument
                 android:name="userSavedBook"
                 app:argType="com.elenaneacsu.bookfolio.models.UserBook"
                 app:nullable="true" />
         </action>
+        <!--        <action-->
+        <!--            android:id="@+id/action_shelvesFragment_to_bookDetailsFragment"-->
+        <!--            app:destination="@id/bookDetailsFragment">-->
+        <!--            <argument-->
+        <!--                android:name="userSavedBook"-->
+        <!--                app:argType="com.elenaneacsu.bookfolio.models.UserBook"-->
+        <!--                app:nullable="true" />-->
+        <!--        </action>-->
     </fragment>
 
     <fragment
@@ -29,5 +38,13 @@
             android:name="shelf"
             app:argType="com.elenaneacsu.bookfolio.models.Shelf"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_shelfFragment_to_book_details"
+            app:destination="@id/book_details">
+            <argument
+                android:name="userSavedBook"
+                app:argType="com.elenaneacsu.bookfolio.models.UserBook"
+                app:nullable="true" />
+        </action>
     </fragment>
 </navigation>

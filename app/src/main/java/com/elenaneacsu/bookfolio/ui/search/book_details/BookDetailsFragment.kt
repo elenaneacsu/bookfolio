@@ -1,24 +1,19 @@
 package com.elenaneacsu.bookfolio.ui.search.book_details
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentBookDetailsBinding
 import com.elenaneacsu.bookfolio.extensions.*
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.models.UserBook
-import com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.ui.MainActivity
-import com.elenaneacsu.bookfolio.ui.shelves.shelf.ShelfFragmentArgs
 import com.elenaneacsu.bookfolio.utils.date.toStringDate
 import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
@@ -31,11 +26,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
     BaseMvvmFragment<BookDetailsViewModel, FragmentBookDetailsBinding>(
-    R.layout.fragment_book_details, BookDetailsViewModel::class.java
-) {
+        R.layout.fragment_book_details, BookDetailsViewModel::class.java
+    ) {
 
     private var book: Item? = null
     private var userSavedBook: UserBook? = null
+    private var bookDetailsMapper: BookDetailsMapper? = null
     private var bottomSheetDialog: BottomSheetDialog? = null
 
     override fun onCreateView(
@@ -56,11 +52,12 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
         val bundle = arguments ?: return
 
         val args = BookDetailsFragmentArgs.fromBundle(bundle)
-        viewBinding.book = args.book
-        viewBinding.userSavedBook = args.userSavedBook
 
         book = Item(args.book?.id, args.book?.volumeInfo)
         userSavedBook = args.userSavedBook
+
+        bookDetailsMapper = BookDetailsMapper(args.userSavedBook, args.book)
+        viewBinding.book = bookDetailsMapper
     }
 
     override fun initViews() {
@@ -81,7 +78,7 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
             }
 
             endDateIcon.setOnOneOffClickListener {
-                showMaterialDatePicker(false, {it.dismiss()}, {
+                showMaterialDatePicker(false, { it.dismiss() }, {
                     endDate.text = it.toStringDate()
                 })
             }
@@ -93,7 +90,7 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
         super.initObservers()
 
         viewModel.shelvesResult.observe(viewLifecycleOwner, {
-            when(it.status) {
+            when (it.status) {
                 Result.Status.LOADING -> showProgress()
                 Result.Status.SUCCESS -> {
                     hideProgress()
@@ -107,7 +104,7 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
         })
 
         viewModel.addBookResult.observe(viewLifecycleOwner, {
-            when(it.status) {
+            when (it.status) {
                 Result.Status.LOADING -> showProgress()
                 Result.Status.SUCCESS -> {
                     bottomSheetDialog?.dismiss()
@@ -142,7 +139,8 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
     }
 
     private fun showShelvesDialog(shelves: List<Shelf>) {
-        val sheetView = requireActivity().layoutInflater.inflate(R.layout.bottom_sheet_options_dialog, null)
+        val sheetView =
+            requireActivity().layoutInflater.inflate(R.layout.bottom_sheet_options_dialog, null)
         bottomSheetDialog = createBottomSheetDialog(sheetView, "Add this book into shelf")
 
         val adapter = ShelfOptionsAdapter(requireContext(), this)

@@ -97,12 +97,18 @@ fun String?.checkStringValue(
 
 
 fun String.stringToDate(dateFormat: String, locale: Locale = Locale.US): Date {
-
     val simpleDateFormat = SimpleDateFormat(dateFormat, locale)
     return try {
-      simpleDateFormat.parse(this)
+        simpleDateFormat.parse(this)
     } catch (e: Exception) {
         e.printStackTrace()
         Date()
     }
+}
+
+fun List<String>.formattedBookDetails(separator: String): String {
+    val formattedAuthorsStringBuilder = StringBuilder()
+    for (author in this)
+        formattedAuthorsStringBuilder.append(author).append(separator)
+    return formattedAuthorsStringBuilder.dropLast(separator.length).toString()
 }

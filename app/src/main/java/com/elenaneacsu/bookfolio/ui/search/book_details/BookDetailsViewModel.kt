@@ -8,9 +8,11 @@ import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.utils.ResourceString
+import com.elenaneacsu.bookfolio.utils.date.toStringDate
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -47,7 +49,10 @@ class BookDetailsViewModel @Inject constructor(
 
     fun addBookIntoShelf(book: Item, shelf: Shelf) = makeRequest(resourceString, ioContext, _addBookResult) {
         _addBookResult.postValue(Result.loading())
-        repository.addBookIntoShelf(UserBook(item = book, startDate = "June 21, 2021"), shelf)
+        repository.addBookIntoShelf(
+            UserBook(item = book, startDate = Date().time.toStringDate()),
+            shelf
+        )
         _addBookResult.postValue(Result.success())
     }
 }

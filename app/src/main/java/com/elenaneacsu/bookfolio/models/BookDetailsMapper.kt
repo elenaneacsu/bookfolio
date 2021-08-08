@@ -1,18 +1,28 @@
 package com.elenaneacsu.bookfolio.models
 
+import android.os.Parcelable
 import com.elenaneacsu.bookfolio.extensions.formattedBookDetails
 import com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse
+import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.AUTHORS_SEPARATOR
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.CATEGORIES_SEPARATOR
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by Elena Neacsu on 07/08/2021
  */
+@Parcelize
 class BookDetailsMapper(
     private val userBook: UserBook? = null,
     private val apiBook: FullItemResponse? = null
-) {
+) : Parcelable {
+    fun getItemApiBook() = Item(apiBook?.id, apiBook?.volumeInfo)
+
+    fun getId() = apiBook?.id
+
     fun getCover() = getBook()?.imageLinks?.thumbnail
+
+    fun getSmallCover() = getBook()?.imageLinks?.smallThumbnail
 
     fun getTitle() = getBook()?.title
 

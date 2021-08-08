@@ -5,9 +5,8 @@ import android.view.ViewGroup
 import com.bumptech.glide.request.RequestOptions
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.BookLayoutBinding
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.recycler_view.BaseAdapter
-import com.elenaneacsu.bookfolio.recycler_view.BaseViewHolder
 import com.elenaneacsu.bookfolio.utils.GlideApp
 
 
@@ -17,8 +16,8 @@ import com.elenaneacsu.bookfolio.utils.GlideApp
 class BookAdapter(
     private val context: Context,
     private val itemClickListener: OnItemClickListener
-) : BaseAdapter<Item, BookViewHolder>(context),
-    BaseViewHolder.OnItemClickListener {
+) : BaseAdapter<BookDetailsMapper, BookViewHolder>(context),
+    BookViewHolder.OnBookItemClickListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val bookItemBinding = BookLayoutBinding.inflate(layoutInflater, parent, false)
@@ -31,8 +30,8 @@ class BookAdapter(
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         holder.bindItem(_items[position])
-        if (_items[position].volumeInfo?.imageLinks?.smallThumbnail != null) {
-            val image = _items[position].volumeInfo?.imageLinks?.smallThumbnail
+        if (_items[position].getSmallCover() != null) {
+            val image = _items[position].getSmallCover()
             GlideApp.with(context)
                 .load(image)
                 .apply(RequestOptions())
@@ -51,7 +50,12 @@ class BookAdapter(
         itemClickListener.onBookClicked(_items[position])
     }
 
+    override fun onRemoveBook(position: Int) {
+        itemClickListener.onRemoveBook(_items[position])
+    }
+
     interface OnItemClickListener {
-        fun onBookClicked(book: Item)
+        fun onBookClicked(book: BookDetailsMapper)
+        fun onRemoveBook(book: BookDetailsMapper) {}
     }
 }

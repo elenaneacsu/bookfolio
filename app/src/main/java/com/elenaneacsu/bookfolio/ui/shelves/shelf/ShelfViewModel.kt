@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.models.ShelfType
-import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
@@ -23,8 +23,8 @@ class ShelfViewModel @Inject constructor(
     private val repository: ShelfRepository
 ) : BaseViewModel(resourceString, coroutineContextProvider) {
 
-    private val _booksInShelfResult = MutableLiveData<Result<List<UserBook>>>()
-    val booksInShelfResult: LiveData<Result<List<UserBook>>>
+    private val _booksInShelfResult = MutableLiveData<Result<List<BookDetailsMapper>>>()
+    val booksInShelfResult: LiveData<Result<List<BookDetailsMapper>>>
         get() = _booksInShelfResult
 
     fun getBooks(shelf: Shelf) = makeRequest(resourceString, ioContext, _booksInShelfResult) {
@@ -32,7 +32,7 @@ class ShelfViewModel @Inject constructor(
 
         val books = ShelfType.getShelfType(shelf.name!!)?.let { shelfType ->
             repository.getBooksInShelf(shelfType)
-        }
+        }?.map { BookDetailsMapper(userBook = it) }
 
         _booksInShelfResult.postValue(Result.success(books))
     }

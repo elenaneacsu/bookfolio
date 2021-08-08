@@ -14,7 +14,7 @@
             app:popUpTo="@id/searchFragment">
             <argument
                 android:name="book"
-                app:argType="com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse"
+                app:argType="com.elenaneacsu.bookfolio.models.BookDetailsMapper"
                 app:nullable="true" />
         </action>
     </fragment>

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.PLUS
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.SPACE
 import com.elenaneacsu.bookfolio.utils.ResourceString
@@ -24,12 +24,12 @@ class SearchViewModel @Inject constructor(
     private val repository: SearchRepository
 ) : BaseViewModel(resourceString, coroutineContextProvider) {
 
-    private val _booksSearchResult = MutableLiveData<Result<List<Item>>>()
-    val booksSearchResult: LiveData<Result<List<Item>>>
+    private val _booksSearchResult = MutableLiveData<Result<List<BookDetailsMapper>>>()
+    val booksSearchResult: LiveData<Result<List<BookDetailsMapper>>>
         get() = _booksSearchResult
 
-    private val _bookDetailsResult = MutableLiveData<Result<FullItemResponse>>()
-    val bookDetailsResult: LiveData<Result<FullItemResponse>>
+    private val _bookDetailsResult = MutableLiveData<Result<BookDetailsMapper>>()
+    val bookDetailsResult: LiveData<Result<BookDetailsMapper>>
         get() = _bookDetailsResult
 
     private val _isBookClickHandled = MutableLiveData<Boolean>()
@@ -41,10 +41,17 @@ class SearchViewModel @Inject constructor(
             _booksSearchResult.postValue(Result.loading())
             val formattedSearchTerm = searchTerm.replace(SPACE, PLUS)
             val items = repository.searchBooks(formattedSearchTerm)
-            val books = mutableListOf<Item>()
+            val books = mutableListOf<BookDetailsMapper>()
             if (items != null) {
                 for (item in items)
-                    books.add(item)
+                    books.add(
+                        BookDetailsMapper(
+                            apiBook = FullItemResponse(
+                                id = item.id,
+                                volumeInfo = item.volumeInfo
+                            )
+                        )
+                    )
             }
             _booksSearchResult.postValue(Result.success(books.toList()))
         }
@@ -54,10 +61,8 @@ class SearchViewModel @Inject constructor(
             _isBookClickHandled.postValue(false)
             _bookDetailsResult.postValue(Result.loading())
             val book = repository.getBooksDetails(volumeId)
-            if (book != null) {
-                _bookDetailsResult.postValue(Result.success(book))
-                _isBookClickHandled.postValue(true)
-            }
+            _bookDetailsResult.postValue(Result.success(BookDetailsMapper(apiBook = book)))
+            _isBookClickHandled.postValue(true)
 
         }
 }

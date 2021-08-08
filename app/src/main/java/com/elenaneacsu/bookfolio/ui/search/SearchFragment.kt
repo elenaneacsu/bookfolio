@@ -11,7 +11,7 @@ import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.getThemeColor
 import com.elenaneacsu.bookfolio.extensions.hideKeyboard
 import com.elenaneacsu.bookfolio.extensions.updateStatusBarColor
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -124,8 +124,8 @@ class SearchFragment : BookAdapter.OnItemClickListener,
     }
 
 
-    override fun onBookClicked(book: Item) {
-        book.id?.let { viewModel.getBookDetails(it) }
+    override fun onBookClicked(book: BookDetailsMapper) {
+        book.getId()?.let { viewModel.getBookDetails(it) }
     }
 
     override fun hideProgress() {

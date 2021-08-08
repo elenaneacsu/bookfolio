@@ -6,20 +6,23 @@
 
     <data>
 
-        <import type="com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeInfo"/>
+        <import type="com.elenaneacsu.bookfolio.models.BookDetailsMapper" />
+
+        <import type="android.view.View" />
+
         <variable
             name="book"
-            type="VolumeInfo" />
+            type="BookDetailsMapper" />
     </data>
 
     <androidx.cardview.widget.CardView
-        app:cardCornerRadius="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/small_margin"
         android:layout_marginTop="@dimen/small_margin"
         android:layout_marginEnd="@dimen/small_margin"
-        android:elevation="8dp">
+        android:elevation="8dp"
+        app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_container"
@@ -31,15 +34,15 @@
 
             <ImageView
                 android:id="@+id/book_cover"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="H,16:9"
                 android:layout_marginStart="@dimen/small_margin"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="H,16:9"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/ic_bookshelf_filled_24dp" />
 
             <TextView
@@ -51,8 +54,8 @@
                 android:layout_marginTop="@dimen/small_margin"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@{book.title}"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@{book.getTitle()}"
+                app:layout_constraintEnd_toStartOf="@id/remove_book"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/book_cover"
                 app:layout_constraintTop_toTopOf="parent"
@@ -65,13 +68,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginBottom="@dimen/small_margin"
-                android:text="@{book.authors.get(0)}"
+                android:text="@{book.getAuthors()}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/remove_book"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@id/book_title"
                 app:layout_constraintTop_toBottomOf="@id/book_title"
                 tools:text="Charles Bukowski" />
+
+            <ImageView
+                android:id="@+id/remove_book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/medium_padding"
+                android:visibility="@{book.areQuotesAvailable() == true ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_delete_24dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

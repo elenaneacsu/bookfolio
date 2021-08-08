@@ -9,12 +9,7 @@
         android:label="BookDetailsFragment">
         <argument
             android:name="book"
-            app:argType="com.elenaneacsu.bookfolio.models.google_books_api_models.FullItemResponse"
-            app:nullable="true"
-            android:defaultValue="@null" />
-        <argument
-            android:name="userSavedBook"
-            app:argType="com.elenaneacsu.bookfolio.models.UserBook"
+            app:argType="com.elenaneacsu.bookfolio.models.BookDetailsMapper"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>

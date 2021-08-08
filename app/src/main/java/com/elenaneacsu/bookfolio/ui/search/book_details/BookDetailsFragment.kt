@@ -11,8 +11,6 @@ import com.elenaneacsu.bookfolio.databinding.FragmentBookDetailsBinding
 import com.elenaneacsu.bookfolio.extensions.*
 import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.Shelf
-import com.elenaneacsu.bookfolio.models.UserBook
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.utils.date.toStringDate
 import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
@@ -29,8 +27,6 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
         R.layout.fragment_book_details, BookDetailsViewModel::class.java
     ) {
 
-    private var book: Item? = null
-    private var userSavedBook: UserBook? = null
     private var bookDetailsMapper: BookDetailsMapper? = null
     private var bottomSheetDialog: BottomSheetDialog? = null
 
@@ -53,10 +49,7 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
 
         val args = BookDetailsFragmentArgs.fromBundle(bundle)
 
-        book = Item(args.book?.id, args.book?.volumeInfo)
-        userSavedBook = args.userSavedBook
-
-        bookDetailsMapper = BookDetailsMapper(args.userSavedBook, args.book)
+        bookDetailsMapper = args.book
         viewBinding.book = bookDetailsMapper
     }
 
@@ -136,7 +129,7 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
     }
 
     override fun onShelfOptionClicked(shelf: Shelf) {
-        book?.let { viewModel.addBookIntoShelf(it, shelf) }
+        bookDetailsMapper?.getItemApiBook()?.let { viewModel.addBookIntoShelf(it, shelf) }
     }
 
     private fun showShelvesDialog(shelves: List<Shelf>) {

@@ -16,18 +16,10 @@
             android:id="@+id/action_shelvesFragment_to_book_details"
             app:destination="@id/book_details">
             <argument
-                android:name="userSavedBook"
-                app:argType="com.elenaneacsu.bookfolio.models.UserBook"
+                android:name="book"
+                app:argType="com.elenaneacsu.bookfolio.models.BookDetailsMapper"
                 app:nullable="true" />
         </action>
-        <!--        <action-->
-        <!--            android:id="@+id/action_shelvesFragment_to_bookDetailsFragment"-->
-        <!--            app:destination="@id/bookDetailsFragment">-->
-        <!--            <argument-->
-        <!--                android:name="userSavedBook"-->
-        <!--                app:argType="com.elenaneacsu.bookfolio.models.UserBook"-->
-        <!--                app:nullable="true" />-->
-        <!--        </action>-->
     </fragment>
 
     <fragment
@@ -42,8 +34,8 @@
             android:id="@+id/action_shelfFragment_to_book_details"
             app:destination="@id/book_details">
             <argument
-                android:name="userSavedBook"
-                app:argType="com.elenaneacsu.bookfolio.models.UserBook"
+                android:name="book"
+                app:argType="com.elenaneacsu.bookfolio.models.BookDetailsMapper"
                 app:nullable="true" />
         </action>
     </fragment>

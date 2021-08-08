@@ -8,12 +8,14 @@ import androidx.navigation.fragment.findNavController
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentShelfBinding
 import com.elenaneacsu.bookfolio.extensions.Result
+import com.elenaneacsu.bookfolio.extensions.getThemeColor
 import com.elenaneacsu.bookfolio.extensions.updateStatusBarColor
-import com.elenaneacsu.bookfolio.models.UserBook
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.google_books_api_models.ImageLinks
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeInfo
 import com.elenaneacsu.bookfolio.ui.MainActivity
+import com.elenaneacsu.bookfolio.ui.search.BookAdapter
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,11 +23,11 @@ import dagger.hilt.android.AndroidEntryPoint
  * Created by Elena Neacsu on 15/05/21
  */
 @AndroidEntryPoint
-class ShelfFragment : UserBookAdapter.OnItemClickListener,
+class ShelfFragment : BookAdapter.OnItemClickListener,
     BaseMvvmFragment<ShelfViewModel, FragmentShelfBinding>(
         R.layout.fragment_shelf, ShelfViewModel::class.java
     ) {
-    private var booksAdapter: UserBookAdapter? = null
+    private var booksAdapter: BookAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +38,7 @@ class ShelfFragment : UserBookAdapter.OnItemClickListener,
         (activity as? MainActivity)?.apply {
             updateStatusBarColor(R.color.primary, false)
             manageBottomNavigationVisibility(View.VISIBLE)
+            viewBinding.pullToRefresh.setColorSchemeColors(getThemeColor(R.attr.colorAccent))
         }
         return view
 
@@ -56,7 +59,7 @@ class ShelfFragment : UserBookAdapter.OnItemClickListener,
         super.initViews()
 
         context?.let {
-            booksAdapter = UserBookAdapter(it, this@ShelfFragment)
+            booksAdapter = BookAdapter(it, this@ShelfFragment)
         }
 
         viewBinding.booksRecyclerView.adapter = booksAdapter
@@ -97,9 +100,13 @@ class ShelfFragment : UserBookAdapter.OnItemClickListener,
     override fun successAlert(message: String) {
     }
 
-    override fun onUserBookClicked(userBook: UserBook) {
+    override fun onBookClicked(userBook: BookDetailsMapper) {
         val direction = ShelfFragmentDirections.actionShelfFragmentToBookDetails(userBook)
         findNavController().navigate(direction)
+    }
+
+    override fun onRemoveBook(book: BookDetailsMapper) {
+
     }
 
     private fun mockData() {

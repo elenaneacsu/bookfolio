@@ -2,7 +2,6 @@ package com.elenaneacsu.bookfolio.ui.shelves.shelf
 
 import com.elenaneacsu.bookfolio.models.ShelfType
 import com.elenaneacsu.bookfolio.models.UserBook
-import com.elenaneacsu.bookfolio.networking.RetrofitRequests
 import com.elenaneacsu.bookfolio.utils.Constants
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
 import com.google.firebase.firestore.QuerySnapshot
@@ -15,8 +14,7 @@ import javax.inject.Inject
 /**
  * Created by Elena Neacsu on 15/05/21
  */
-class ShelfRepository @Inject constructor(private val retrofitRequests: RetrofitRequests) :
-    BaseRepository() {
+class ShelfRepository @Inject constructor() : BaseRepository() {
 
     suspend fun getBooksInShelf(shelfType: ShelfType): List<UserBook> {
         val booksInShelfQueryDeferred = async(Dispatchers.IO) {

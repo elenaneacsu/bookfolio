@@ -1,5 +1,6 @@
 package com.elenaneacsu.bookfolio.ui.shelves
 
+import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.models.ShelfType
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.NUMBER_OF_BOOKS
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
@@ -17,16 +18,26 @@ class ShelvesRepository @Inject constructor() : BaseRepository() {
 
     fun getUserName() = auth.currentUser?.displayName ?: "empty"
 
-    suspend fun getShelves(): List<DocumentSnapshot?> {
+    suspend fun getShelves(): List<Shelf> {
         val toReadShelf = async(Dispatchers.IO) { getToReadCollection() }
         val currentlyReadingShelf = async(Dispatchers.IO) { getCurrentlyReadingCollection() }
         val readShelf = async(Dispatchers.IO) {
             getReadCollection()
         }
 
-        return awaitAll(toReadShelf, currentlyReadingShelf, readShelf, delay).filterIsInstance(
-            DocumentSnapshot::class.java
-        )
+        val shelvesSnapshots =
+            awaitAll(toReadShelf, currentlyReadingShelf, readShelf, delay).filterIsInstance(
+                DocumentSnapshot::class.java
+            )
+
+        val shelves = mutableListOf<Shelf>()
+        shelves.addAll(shelvesSnapshots.mapNotNull { documentSnapshot ->
+            documentSnapshot.toObject(
+                Shelf::class.java
+            )
+        })
+
+        return shelves.toList()
     }
 
     private suspend fun getToReadCollection() =

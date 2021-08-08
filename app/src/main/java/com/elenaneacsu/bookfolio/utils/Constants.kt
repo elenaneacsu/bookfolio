@@ -15,6 +15,7 @@ class Constants {
         const val READ_COLLECTION = "read"
 
         const val NUMBER_OF_BOOKS = "number_of_books"
+        const val NUMBER_OF_BOOKS_FIELD_NAME = "numberOfBooks"
 
         const val SPACE = " "
         const val PLUS = "+"

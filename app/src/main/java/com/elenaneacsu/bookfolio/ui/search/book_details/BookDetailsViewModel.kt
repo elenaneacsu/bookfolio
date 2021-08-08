@@ -37,19 +37,14 @@ class BookDetailsViewModel @Inject constructor(
 
     fun getShelves() = makeRequest(resourceString, ioContext, _shelvesResult) {
         _shelvesResult.postValue(Result.loading())
-        val docSnapshotsList = repository.getShelves()
-        val shelves = mutableListOf<Shelf>()
-        for (docSnapshot in docSnapshotsList) {
-            docSnapshot?.toObject(Shelf::class.java)?.let {
-                shelves.add(it)
-            }
-        }
+
+        val shelves = repository.getShelves()
         _shelvesResult.postValue(Result.success(shelves))
     }
 
     fun addBookIntoShelf(book: Item, shelf: Shelf) = makeRequest(resourceString, ioContext, _addBookResult) {
         _addBookResult.postValue(Result.loading())
-        repository.addBookIntoShelf(
+        repository.processAddBookIntoShelf(
             UserBook(item = book, startDate = Date().time.toStringDate()),
             shelf
         )

@@ -81,12 +81,12 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     override fun initObservers() {
         super.initObservers()
 
-        viewModel.mla.observe(viewLifecycleOwner, {
+        viewModel.shelvesResult.observe(viewLifecycleOwner, {
             when (it.status) {
                 Result.Status.LOADING -> showProgress()
                 Result.Status.SUCCESS -> {
                     hideProgress()
-                    it.data?.let { it1 -> shelvesAdapter?.add(it1) }
+                    it.data?.let { shelves -> shelvesAdapter?.add(shelves) }
                     shelvesAdapter?.notifyDataSetChanged()
                 }
                 Result.Status.ERROR -> {

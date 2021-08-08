@@ -128,6 +128,7 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
     }
 
     override fun errorAlert(message: String) {
+        toast(message)
     }
 
     override fun successAlert(message: String) {

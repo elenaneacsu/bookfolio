@@ -23,26 +23,15 @@ class ShelvesViewModel @Inject constructor(
 
     val username = repository.getUserName()
 
-    private val _mla = MutableLiveData<Result<List<Shelf>>>()
-    val mla: LiveData<Result<List<Shelf>>>
-        get() = _mla
+    private val _shelvesResult = MutableLiveData<Result<List<Shelf>>>()
+    val shelvesResult: LiveData<Result<List<Shelf>>>
+        get() = _shelvesResult
 
-    fun getShelves() = makeRequest(resourceString, ioContext, _mla) {
-        _mla.postValue(Result.loading())
-        val docSnapshotsList = repository.getShelves()
-        val shelves = mutableListOf<Shelf>()
-        for (docSnapshot in docSnapshotsList) {
-            docSnapshot?.toObject(Shelf::class.java)?.let {
-                if(it.name?.equals("To read", ignoreCase = true) == true)
-                    it.numberOfBooks = 10
-                else if (it.name?.equals("Read", ignoreCase = true) == true)
-                    it.numberOfBooks = 5
-                else
-                    it.numberOfBooks = 2
-                shelves.add(it)
-            }
-        }
-        _mla.postValue(Result.success(shelves))
+    fun getShelves() = makeRequest(resourceString, ioContext, _shelvesResult) {
+        _shelvesResult.postValue(Result.loading())
+
+        val shelves = repository.getShelves()
+        _shelvesResult.postValue(Result.success(shelves))
     }
 
 }

@@ -3,10 +3,7 @@ package com.elenaneacsu.bookfolio.ui.search.book_details
 import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.ui.shelves.ShelvesRepository
-import com.elenaneacsu.bookfolio.utils.Constants.Companion.NUMBER_OF_BOOKS
-import com.elenaneacsu.bookfolio.utils.Constants.Companion.NUMBER_OF_BOOKS_FIELD_NAME
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
-import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -24,7 +21,8 @@ class BookDetailsRepository @Inject constructor(private val shelvesRepository: S
 
     suspend fun processAddBookIntoShelf(book: UserBook, shelf: Shelf) {
         val bookAddedIntoShelfDeferred = addBookIntoShelfAsync(book, shelf)
-        val numberOfBooksInShelfDeferred = updateNumberOfBooksInShelfAsync(shelf)
+        val numberOfBooksInShelfDeferred =
+            updateNumberOfBooksInShelfAsync(shelf, isIncremented = true)
 
         awaitAll(bookAddedIntoShelfDeferred, numberOfBooksInShelfDeferred)
     }
@@ -37,17 +35,6 @@ class BookDetailsRepository @Inject constructor(private val shelvesRepository: S
                         bookId
                     )?.set(book)?.await()
                 }
-            }
-        }
-    }
-
-    private suspend fun updateNumberOfBooksInShelfAsync(shelf: Shelf): Deferred<Void?> {
-        val increment = FieldValue.increment(1)
-
-        return async(Dispatchers.IO) {
-            shelf.name?.let { shelfName ->
-                getMainDocumentOfRegisteredUser()?.collection(shelfName)?.document(NUMBER_OF_BOOKS)
-                    ?.update(NUMBER_OF_BOOKS_FIELD_NAME, increment)?.await()
             }
         }
     }

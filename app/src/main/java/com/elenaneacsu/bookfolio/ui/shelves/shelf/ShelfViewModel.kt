@@ -6,7 +6,6 @@ import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
 import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.Shelf
-import com.elenaneacsu.bookfolio.models.ShelfType
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
@@ -27,13 +26,24 @@ class ShelfViewModel @Inject constructor(
     val booksInShelfResult: LiveData<Result<List<BookDetailsMapper>>>
         get() = _booksInShelfResult
 
+    private val _removeBookResult = MutableLiveData<Result<BookDetailsMapper>>()
+    val removeBookResult: LiveData<Result<BookDetailsMapper>>
+        get() = _removeBookResult
+
     fun getBooks(shelf: Shelf) = makeRequest(resourceString, ioContext, _booksInShelfResult) {
         _booksInShelfResult.postValue(Result.loading())
 
-        val books = ShelfType.getShelfType(shelf.name!!)?.let { shelfType ->
-            repository.getBooksInShelf(shelfType)
-        }?.map { BookDetailsMapper(userBook = it) }
+        val books = repository.getBooksInShelf(shelf).map { BookDetailsMapper(userBook = it) }
 
         _booksInShelfResult.postValue(Result.success(books))
     }
+
+    fun removeBook(book: BookDetailsMapper, shelf: Shelf) =
+        makeRequest(resourceString, ioContext, _removeBookResult) {
+            _removeBookResult.postValue(Result.loading())
+
+            repository.processRemoveBookFromShelf(book, shelf)
+
+            _removeBookResult.postValue(Result.success(book))
+        }
 }

@@ -1,10 +1,13 @@
 package com.elenaneacsu.bookfolio.ui.shelves.shelf
 
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
+import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.models.ShelfType
 import com.elenaneacsu.bookfolio.models.UserBook
 import com.elenaneacsu.bookfolio.utils.Constants
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
 import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -16,9 +19,10 @@ import javax.inject.Inject
  */
 class ShelfRepository @Inject constructor() : BaseRepository() {
 
-    suspend fun getBooksInShelf(shelfType: ShelfType): List<UserBook> {
+    suspend fun getBooksInShelf(shelf: Shelf): List<UserBook> {
+        val shelfTypeName = ShelfType.getShelfType(shelf.name!!)?.valueAsString
         val booksInShelfQueryDeferred = async(Dispatchers.IO) {
-            getMainDocumentOfRegisteredUser()?.collection(shelfType.valueAsString)?.get()?.await()
+            shelfTypeName?.let { getMainDocumentOfRegisteredUser()?.collection(it)?.get()?.await() }
         }
 
         val booksInShelfQuery = awaitAll(booksInShelfQueryDeferred, delay).filterIsInstance(
@@ -30,5 +34,30 @@ class ShelfRepository @Inject constructor() : BaseRepository() {
             .mapNotNull { it.toObject(UserBook::class.java) })
 
         return books.toList()
+    }
+
+    suspend fun processRemoveBookFromShelf(book: BookDetailsMapper, shelf: Shelf) {
+        val bookRemovedFromShelfDeferred = removeBookFromShelfAsync(book, shelf)
+        val numberOfBooksInShelfDeferred =
+            updateNumberOfBooksInShelfAsync(shelf, isIncremented = false)
+
+        awaitAll(bookRemovedFromShelfDeferred, numberOfBooksInShelfDeferred)
+    }
+
+    private suspend fun removeBookFromShelfAsync(
+        book: BookDetailsMapper,
+        shelf: Shelf
+    ): Deferred<Void?> {
+        val shelfTypeName = ShelfType.getShelfType(shelf.name!!)?.valueAsString
+
+        return async(Dispatchers.IO) {
+            shelfTypeName?.let { shelfName ->
+                book.getId()?.let { bookId ->
+                    getMainDocumentOfRegisteredUser()?.collection(shelfName)?.document(
+                        bookId
+                    )?.delete()?.await()
+                }
+            }
+        }
     }
 }

@@ -80,6 +80,7 @@
                 android:id="@+id/remove_book"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
                 android:padding="@dimen/medium_padding"
                 android:visibility="@{book.areQuotesAvailable() == true ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"

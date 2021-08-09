@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentShelfBinding
-import com.elenaneacsu.bookfolio.extensions.Result
-import com.elenaneacsu.bookfolio.extensions.getThemeColor
-import com.elenaneacsu.bookfolio.extensions.updateStatusBarColor
+import com.elenaneacsu.bookfolio.extensions.*
 import com.elenaneacsu.bookfolio.models.BookDetailsMapper
+import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.models.google_books_api_models.ImageLinks
 import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
 import com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeInfo
@@ -28,6 +27,7 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
         R.layout.fragment_shelf, ShelfViewModel::class.java
     ) {
     private var booksAdapter: BookAdapter? = null
+    private var shelf: Shelf? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +41,6 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
             viewBinding.pullToRefresh.setColorSchemeColors(getThemeColor(R.attr.colorAccent))
         }
         return view
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,7 +48,7 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
         val bundle = arguments ?: return
 
         val args = ShelfFragmentArgs.fromBundle(bundle)
-        args.shelf?.let {
+        shelf = args.shelf?.also {
             viewBinding.toolbar.title = it.name
             viewModel.getBooks(it)
         }
@@ -84,6 +83,30 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
                 }
             }
         })
+
+        viewModel.removeBookResult.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    hideProgress()
+                    activity?.getString(R.string.removed_book_success)?.let { message ->
+                        successAlert(
+                            message
+                        )
+                    }
+                    it.data?.let { book -> booksAdapter?.onBookRemoved(book) }
+                }
+                Result.Status.ERROR -> {
+                    hideProgress()
+                    it.message ?: activity?.getString(R.string.default_error_message)
+                        ?.let { message ->
+                            errorAlert(
+                                message
+                            )
+                        }
+                }
+            }
+        })
     }
 
     override fun hideProgress() {
@@ -95,18 +118,31 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
     }
 
     override fun errorAlert(message: String) {
+        toast(message)
     }
 
     override fun successAlert(message: String) {
+        toast(message)
     }
 
-    override fun onBookClicked(userBook: BookDetailsMapper) {
-        val direction = ShelfFragmentDirections.actionShelfFragmentToBookDetails(userBook)
+    override fun onBookClicked(book: BookDetailsMapper) {
+        val direction = ShelfFragmentDirections.actionShelfFragmentToBookDetails(book)
         findNavController().navigate(direction)
     }
 
     override fun onRemoveBook(book: BookDetailsMapper) {
-
+        context?.let { ctx ->
+            ctx.alert(cancelable = true, style = R.style.AlertDialogStyle) {
+                setTitle("Remove book")
+                setMessage("Are you sure you want to remove this book from your ${shelf?.name} shelf?")
+                positiveButton {
+                    shelf?.let { viewModel.removeBook(book, it) }
+                }
+                negativeButton("Cancel") {
+                    it.dismiss()
+                }
+            }
+        }
     }
 
     private fun mockData() {
@@ -130,9 +166,12 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
             )
         )
 
-        val book3 = Item(volumeInfo = VolumeInfo("Soldatii: poveste din Ferentari", authors = listOf("Adrian Schiop"),
-        imageLinks = ImageLinks("http://books.google.com/books/content?id=7ymTDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api")
-        ))
+        val book3 = Item(
+            volumeInfo = VolumeInfo(
+                "Soldatii: poveste din Ferentari", authors = listOf("Adrian Schiop"),
+                imageLinks = ImageLinks("http://books.google.com/books/content?id=7ymTDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api")
+            )
+        )
 
         val book4 = Item(
             volumeInfo = VolumeInfo(

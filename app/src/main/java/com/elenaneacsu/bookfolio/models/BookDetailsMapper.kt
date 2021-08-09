@@ -18,7 +18,7 @@ class BookDetailsMapper(
 ) : Parcelable {
     fun getItemApiBook() = Item(apiBook?.id, apiBook?.volumeInfo)
 
-    fun getId() = apiBook?.id
+    fun getId() = apiBook?.id ?: userBook?.item?.id
 
     fun getCover() = getBook()?.imageLinks?.thumbnail
 

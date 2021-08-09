@@ -32,7 +32,7 @@
     <string name="to_read_shelf">To read</string>
     <string name="read_shelf">Read</string>
     <string name="currently_reading_shelf">Currently reading</string>
-    <string name="search_hint">Search title, author or ISBN</string>
+    <string name="removed_book_success">You have successfully removed this book from your shelf!</string>
 
     <!-- Book details region -->
     <string name="page_count">%1$d pages</string>
@@ -41,6 +41,9 @@
     <!-- Quotes region -->
     <string name="edit">Edit</string>
     <string name="remove">Remove</string>
+
+    <!-- Search region -->
+    <string name="search_hint">Search title, author or ISBN</string>
 
     <!-- Account region -->
     <string name="log_out">Log out</string>

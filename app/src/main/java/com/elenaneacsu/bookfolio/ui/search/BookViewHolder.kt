@@ -21,7 +21,7 @@ class BookViewHolder(
             itemClickListener.onItemClicked(adapterPosition)
         }
         itemBinding.removeBook.setOnOneOffClickListener {
-
+            itemClickListener.onRemoveBook(adapterPosition)
         }
     }
 

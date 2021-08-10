@@ -46,7 +46,7 @@
             android:id="@+id/books_placeholder_image"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:src="@drawable/ic_books_placeholder"
+            android:src="@drawable/ic_book_reading_placeholder"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,7 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/large_margin"
-            android:text="Search your favourite books by title or author"
+            android:text="@string/search_placeholder_text"
             android:textAlignment="center"
             android:textColor="?colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"

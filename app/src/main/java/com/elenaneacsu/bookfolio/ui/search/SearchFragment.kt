@@ -15,6 +15,7 @@ import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.bottom_sheet_options_dialog.*
 
 /**
  * Created by Elena Neacsu on 17/05/21
@@ -62,6 +63,18 @@ class SearchFragment : BookAdapter.OnItemClickListener,
 
         searchMenuItem = searchMenu.findItem(R.id.search)
         searchView = searchMenuItem.actionView as SearchView
+
+        searchMenuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                managePlaceholdersVisibility(shouldDisplay = true)
+                return true
+            }
+
+        })
 
         searchView.apply {
             setOnQueryTextListener(searchQueryTextListener)
@@ -153,10 +166,12 @@ class SearchFragment : BookAdapter.OnItemClickListener,
     }
 
     private fun managePlaceholdersVisibility(shouldDisplay: Boolean) {
-        val visibility = if(shouldDisplay) View.VISIBLE else View.GONE
+        val placeholderVisibility = if (shouldDisplay) View.VISIBLE else View.GONE
+        val recyclerViewVisibility = if (!shouldDisplay) View.VISIBLE else View.GONE
         viewBinding.apply {
-            booksPlaceholderImage.visibility = visibility
-            booksPlaceholderText.visibility = visibility
+            booksPlaceholderImage.visibility = placeholderVisibility
+            booksPlaceholderText.visibility = placeholderVisibility
+            booksRecyclerView.visibility = recyclerViewVisibility
         }
     }
 

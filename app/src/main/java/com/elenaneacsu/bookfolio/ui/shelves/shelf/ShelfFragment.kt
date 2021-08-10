@@ -44,7 +44,6 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val bundle = arguments ?: return
 
         val args = ShelfFragmentArgs.fromBundle(bundle)
@@ -52,6 +51,7 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
             viewBinding.toolbar.title = it.name
             viewModel.getBooks(it)
         }
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun initViews() {
@@ -61,7 +61,17 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
             booksAdapter = BookAdapter(it, this@ShelfFragment)
         }
 
-        viewBinding.booksRecyclerView.adapter = booksAdapter
+        viewBinding.apply {
+            booksRecyclerView.adapter = booksAdapter
+            toolbar.setNavigationOnClickListener {
+                (activity as? MainActivity)?.onSupportNavigateUp()
+            }
+            shelf?.let {
+                pullToRefresh.setOnRefreshListener {
+                    viewModel.getBooks(it)
+                }
+            } ?: pullToRefresh.setRefreshing(false)
+        }
     }
 
     override fun initObservers() {
@@ -72,10 +82,16 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
                 Result.Status.LOADING -> showProgress()
                 Result.Status.SUCCESS -> {
                     hideProgress()
-//                    managePlaceholdersVisibility(shouldDisplay = false)
                     viewBinding.booksRecyclerView.visibility = View.VISIBLE
-                    it.data?.let { books -> booksAdapter?.add(books) }
-                    booksAdapter?.notifyDataSetChanged()
+                    it.data?.let { books ->
+                        if (books.isNotEmpty()) {
+                            showEmptyShelfViews(shouldDisplay = false)
+                            booksAdapter?.add(books)
+                            booksAdapter?.notifyDataSetChanged()
+                        } else {
+                            showEmptyShelfViews(shouldDisplay = true)
+                        }
+                    }
                 }
                 Result.Status.ERROR -> {
                     hideProgress()
@@ -148,6 +164,17 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
                     it.dismiss()
                 }
             }
+        }
+    }
+
+    private fun showEmptyShelfViews(shouldDisplay: Boolean) {
+        val emptyShelfViewsVisibility = if (shouldDisplay) View.VISIBLE else View.GONE
+        val recyclerViewVisibility = if (!shouldDisplay) View.VISIBLE else View.GONE
+
+        viewBinding.apply {
+            booksPlaceholderImage.visibility = emptyShelfViewsVisibility
+            booksPlaceholderText.visibility = emptyShelfViewsVisibility
+            booksRecyclerView.visibility = recyclerViewVisibility
         }
     }
 

@@ -19,7 +19,7 @@ open class BaseRepository : CoroutineScope {
     val auth: FirebaseAuth = Firebase.auth
     val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    val delay = async(Dispatchers.IO) { delay(1000) }
+    val delay = async(Dispatchers.IO) { delay(700) }
 
     fun cleanup() {
         job.cancel()

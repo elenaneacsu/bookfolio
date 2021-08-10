@@ -57,6 +57,10 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
         super.initViews()
 
         viewBinding.apply {
+            toolbar.setNavigationOnClickListener {
+                (activity as? MainActivity)?.onSupportNavigateUp()
+            }
+
             fabShelves.setOnOneOffClickListener {
                 viewModel.getShelves()
             }

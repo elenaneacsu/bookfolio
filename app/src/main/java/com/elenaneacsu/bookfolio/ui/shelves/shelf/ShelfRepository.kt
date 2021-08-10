@@ -20,7 +20,7 @@ class ShelfRepository @Inject constructor() : BaseRepository() {
 
     suspend fun getBooksInShelf(shelf: Shelf): List<UserBook> {
         val shelfTypeName = ShelfType.getShelfType(shelf.name!!)?.valueAsString
-        val booksInShelfQueryDeferred = async(coroutineContext) {
+        val booksInShelfQueryDeferred = async {
             shelfTypeName?.let { getMainDocumentOfRegisteredUser()?.collection(it)?.get()?.await() }
         }
 

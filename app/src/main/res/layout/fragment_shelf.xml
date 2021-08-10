@@ -35,6 +35,28 @@
                 app:theme="@style/Toolbar" />
         </com.google.android.material.appbar.AppBarLayout>
 
+        <ImageView
+            android:id="@+id/books_placeholder_image"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:src="@drawable/ic_books_placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/books_placeholder_text"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/large_margin"
+            android:text="@string/no_books_in_shelf_placeholder"
+            android:textAlignment="center"
+            android:textColor="?colorPrimary"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/books_placeholder_image" />
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/pull_to_refresh"
             android:layout_width="match_parent"

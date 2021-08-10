@@ -3,16 +3,12 @@ package com.elenaneacsu.bookfolio.ui.auth
 import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.models.ShelfType
 import com.elenaneacsu.bookfolio.models.User
-import com.elenaneacsu.bookfolio.utils.Constants.Companion.CURRENTLY_READING_COLLECTION
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.NUMBER_OF_BOOKS
-import com.elenaneacsu.bookfolio.utils.Constants.Companion.READ_COLLECTION
-import com.elenaneacsu.bookfolio.utils.Constants.Companion.TO_READ_COLLECTION
 import com.elenaneacsu.bookfolio.utils.Constants.Companion.USERS_COLLECTION
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.tasks.await
@@ -29,8 +25,8 @@ class AuthRepository @Inject constructor() : BaseRepository() {
         val authResult = auth.createUserWithEmailAndPassword(email, password).await()
         if (authResult.user != null) {
             val isUserAdded =
-                async(Dispatchers.IO) { addNewUser(User(name, email), authResult.user) }
-            val isNameUpdated = async(Dispatchers.IO) { updateUserDisplayName(name) }
+                async { addNewUser(User(name, email), authResult.user) }
+            val isNameUpdated = async { updateUserDisplayName(name) }
 
             awaitAll(isUserAdded, isNameUpdated)
             createCollections()
@@ -43,9 +39,9 @@ class AuthRepository @Inject constructor() : BaseRepository() {
 
     private suspend fun createCollections() {
         val isCurrentlyReadingColCreated =
-            async(Dispatchers.IO) { createCurrentlyReadingCollection() }
-        val isToReadColCreated = async(Dispatchers.IO) { createToReadCollection() }
-        val isReadColCreated = async(Dispatchers.IO) { createReadCollection() }
+            async { createCurrentlyReadingCollection() }
+        val isToReadColCreated = async { createToReadCollection() }
+        val isReadColCreated = async { createReadCollection() }
 
         awaitAll(isCurrentlyReadingColCreated, isToReadColCreated, isReadColCreated)
     }

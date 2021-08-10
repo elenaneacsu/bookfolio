@@ -35,7 +35,7 @@ open class BaseRepository : CoroutineScope {
     ): Deferred<Void?> {
         val updatedValue = if (isIncremented) FieldValue.increment(1) else FieldValue.increment(-1)
 
-        return async(Dispatchers.IO) {
+        return async(coroutineContext) {
             shelf.name?.let { shelfName ->
                 getMainDocumentOfRegisteredUser()?.collection(shelfName)
                     ?.document(Constants.NUMBER_OF_BOOKS)

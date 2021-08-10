@@ -5,8 +5,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.request.RequestOptions
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.CurrentlyReadingLayoutBinding
-import com.elenaneacsu.bookfolio.models.UserBook
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.recycler_view.BaseAdapter
 import com.elenaneacsu.bookfolio.recycler_view.BaseViewHolder
 import com.elenaneacsu.bookfolio.utils.GlideApp
@@ -18,7 +17,9 @@ import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 class CurrentlyReadingBookAdapter(
     private val context: Context,
     private val itemClickListener: OnItemClickListener
-) : BaseAdapter<UserBook, CurrentlyReadingBookAdapter.CurrentlyReadingBookViewHolder>(context),
+) : BaseAdapter<BookDetailsMapper, CurrentlyReadingBookAdapter.CurrentlyReadingBookViewHolder>(
+    context
+),
     BaseViewHolder.OnItemClickListener {
 
     override fun onCreateViewHolder(
@@ -35,8 +36,8 @@ class CurrentlyReadingBookAdapter(
 
     override fun onBindViewHolder(holder: CurrentlyReadingBookViewHolder, position: Int) {
         holder.bindItem(_items[position])
-        if (_items[position].item?.volumeInfo?.imageLinks?.smallThumbnail != null) {
-            val image = _items[position].item?.volumeInfo?.imageLinks?.smallThumbnail
+        if (_items[position].getSmallCover() != null) {
+            val image = _items[position].getSmallCover()
             GlideApp.with(context)
                 .load(image)
                 .apply(RequestOptions())
@@ -56,16 +57,16 @@ class CurrentlyReadingBookAdapter(
     }
 
     interface OnItemClickListener {
-        fun onBookClicked(book: UserBook)
+        fun onBookClicked(book: BookDetailsMapper)
     }
 
     class CurrentlyReadingBookViewHolder(
         val itemBinding: CurrentlyReadingLayoutBinding,
         private val itemClickListener: OnItemClickListener,
-    ) : BaseViewHolder<UserBook, CurrentlyReadingLayoutBinding>(itemBinding) {
+    ) : BaseViewHolder<BookDetailsMapper, CurrentlyReadingLayoutBinding>(itemBinding) {
 
-        override fun bindItem(item: UserBook) {
-            itemBinding.book = item.item?.volumeInfo
+        override fun bindItem(item: BookDetailsMapper) {
+            itemBinding.book = item
             itemBinding.executePendingBindings()
 
             itemBinding.constraintContainer.setOnOneOffClickListener {

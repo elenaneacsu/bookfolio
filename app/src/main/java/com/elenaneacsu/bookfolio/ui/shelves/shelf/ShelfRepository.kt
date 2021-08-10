@@ -8,7 +8,6 @@ import com.elenaneacsu.bookfolio.utils.Constants
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.tasks.await
@@ -21,7 +20,7 @@ class ShelfRepository @Inject constructor() : BaseRepository() {
 
     suspend fun getBooksInShelf(shelf: Shelf): List<UserBook> {
         val shelfTypeName = ShelfType.getShelfType(shelf.name!!)?.valueAsString
-        val booksInShelfQueryDeferred = async(Dispatchers.IO) {
+        val booksInShelfQueryDeferred = async(coroutineContext) {
             shelfTypeName?.let { getMainDocumentOfRegisteredUser()?.collection(it)?.get()?.await() }
         }
 
@@ -50,7 +49,7 @@ class ShelfRepository @Inject constructor() : BaseRepository() {
     ): Deferred<Void?> {
         val shelfTypeName = ShelfType.getShelfType(shelf.name!!)?.valueAsString
 
-        return async(Dispatchers.IO) {
+        return async(coroutineContext) {
             shelfTypeName?.let { shelfName ->
                 book.getId()?.let { bookId ->
                     getMainDocumentOfRegisteredUser()?.collection(shelfName)?.document(

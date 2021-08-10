@@ -110,11 +110,17 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
     }
 
     override fun hideProgress() {
-        viewBinding.pullToRefresh.isRefreshing = false
+        viewBinding.apply {
+            pullToRefresh.isRefreshing = false
+            viewOverlay.visibility = View.GONE
+        }
     }
 
     override fun showProgress() {
-        viewBinding.pullToRefresh.isRefreshing = true
+        viewBinding.apply {
+            pullToRefresh.isRefreshing = true
+            viewOverlay.visibility = View.VISIBLE
+        }
     }
 
     override fun errorAlert(message: String) {

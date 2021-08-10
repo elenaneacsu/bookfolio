@@ -1,5 +1,6 @@
 package com.elenaneacsu.bookfolio.ui.favourites
 
+import android.view.View
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentFavouritesBinding
 import com.elenaneacsu.bookfolio.extensions.alert
@@ -36,9 +37,17 @@ class FavouritesFragment: BaseMvvmFragment<FavouritesViewModel, FragmentFavourit
     }
 
     override fun hideProgress() {
+        viewBinding.apply {
+            pullToRefresh.isRefreshing = false
+            viewOverlay.visibility = View.GONE
+        }
     }
 
     override fun showProgress() {
+        viewBinding.apply {
+            pullToRefresh.isRefreshing = true
+            viewOverlay.visibility = View.VISIBLE
+        }
     }
 
     override fun errorAlert(message: String) {

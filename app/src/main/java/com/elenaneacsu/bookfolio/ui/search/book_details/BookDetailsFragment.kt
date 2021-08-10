@@ -145,7 +145,6 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
-
         bottomSheetDialog?.show()
     }
 }

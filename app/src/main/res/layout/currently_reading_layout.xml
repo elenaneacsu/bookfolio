@@ -6,11 +6,11 @@
 
     <data>
 
-        <import type="com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeInfo" />
+        <import type="com.elenaneacsu.bookfolio.models.BookDetailsMapper" />
 
         <variable
             name="book"
-            type="VolumeInfo" />
+            type="BookDetailsMapper" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -52,7 +52,7 @@
                 android:layout_marginEnd="@dimen/small_margin"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@{book.title}"
+                android:text="@{book.getTitle()}"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toTopOf="@id/book_author"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +67,7 @@
                 style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{book.authors.get(0)}"
+                android:text="@{book.getAuthors()}"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

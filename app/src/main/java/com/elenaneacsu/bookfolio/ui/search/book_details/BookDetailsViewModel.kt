@@ -42,12 +42,13 @@ class BookDetailsViewModel @Inject constructor(
         _shelvesResult.postValue(Result.success(shelves))
     }
 
-    fun addBookIntoShelf(book: Item, shelf: Shelf) = makeRequest(resourceString, ioContext, _addBookResult) {
-        _addBookResult.postValue(Result.loading())
-        repository.processAddBookIntoShelf(
-            UserBook(item = book, startDate = Date().time.toStringDate()),
-            shelf
-        )
-        _addBookResult.postValue(Result.success())
-    }
+    fun addBookIntoShelf(book: Item, shelf: Shelf) =
+        makeRequest(resourceString, ioContext, _addBookResult) {
+            _addBookResult.postValue(Result.loading())
+            repository.processAddBookIntoShelf(
+                UserBook(item = book, startDate = Date().time.toStringDate()),
+                shelf
+            )
+            _addBookResult.postValue(Result.success())
+        }
 }

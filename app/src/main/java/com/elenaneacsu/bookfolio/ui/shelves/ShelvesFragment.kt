@@ -1,5 +1,9 @@
 package com.elenaneacsu.bookfolio.ui.shelves
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -7,11 +11,11 @@ import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentShelvesBinding
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.getThemeColor
+import com.elenaneacsu.bookfolio.extensions.toast
+import com.elenaneacsu.bookfolio.extensions.updateStatusBarColor
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.Shelf
-import com.elenaneacsu.bookfolio.models.UserBook
-import com.elenaneacsu.bookfolio.models.google_books_api_models.ImageLinks
-import com.elenaneacsu.bookfolio.models.google_books_api_models.Item
-import com.elenaneacsu.bookfolio.models.google_books_api_models.VolumeInfo
+import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,6 +32,18 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     private var shelvesAdapter: ShelfAdapter? = null
     private var currentlyReadingAdapter: CurrentlyReadingBookAdapter? = null
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+
+        (activity as? MainActivity)?.updateStatusBarColor(R.color.primary, false)
+
+        return view
+    }
+
     override fun initViewModel() {
         super.initViewModel()
         viewBinding.viewModel = viewModel
@@ -40,7 +56,7 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
             viewBinding.pullToRefresh.setColorSchemeColors(it.getThemeColor(R.attr.colorAccent))
         }
         viewBinding.pullToRefresh.setOnRefreshListener {
-            viewModel.getShelves()
+            viewModel.getShelvesScreenInfo()
         }
 
         context?.let {
@@ -71,11 +87,8 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
                 }
             }
         }
-        mockData()
 
-        viewModel.getShelves()
-//        viewModel.getCurrentlyReading()
-
+        viewModel.getShelvesScreenInfo()
     }
 
     override fun initObservers() {
@@ -86,7 +99,13 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
                 Result.Status.LOADING -> showProgress()
                 Result.Status.SUCCESS -> {
                     hideProgress()
-                    it.data?.let { shelves -> shelvesAdapter?.add(shelves) }
+                    it.data?.let { pair ->
+                        shelvesAdapter?.add(pair.first)
+                        shelvesAdapter?.notifyDataSetChanged()
+
+                        currentlyReadingAdapter?.add(pair.second)
+                        currentlyReadingAdapter?.notifyDataSetChanged()
+                    }
                     shelvesAdapter?.notifyDataSetChanged()
                 }
                 Result.Status.ERROR -> {
@@ -95,6 +114,7 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
                 }
             }
         })
+
     }
 
     override fun onShelfClicked(shelf: Shelf) {
@@ -102,45 +122,31 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
         findNavController().navigate(direction)
     }
 
-    override fun onBookClicked(book: UserBook) {
-//        val direction = ShelvesFragmentDirections.actionShelvesFragmentToBookDetailsFragment()
-//        findNavController().navigate(direction)
+    override fun onBookClicked(book: BookDetailsMapper) {
+        val direction = ShelvesFragmentDirections.actionShelvesFragmentToBookDetails(book)
+        findNavController().navigate(direction)
     }
 
     override fun hideProgress() {
-        viewBinding.pullToRefresh.isRefreshing = false
+        viewBinding.apply {
+            pullToRefresh.isRefreshing = false
+            viewOverlay.visibility = View.GONE
+        }
     }
 
     override fun showProgress() {
-        viewBinding.pullToRefresh.isRefreshing = true
+        viewBinding.apply {
+            pullToRefresh.isRefreshing = true
+            viewOverlay.visibility = View.VISIBLE
+        }
     }
 
     override fun errorAlert(message: String) {
+        toast(message)
     }
 
     override fun successAlert(message: String) {
-    }
-
-    private fun mockData() {
-        val book1 = UserBook(
-            item = Item(
-                volumeInfo = VolumeInfo(
-                    title = "You Get So Alone At Times", authors = listOf("Charles Bukowski"),
-                    imageLinks = ImageLinks("http://books.google.com/books/content?id=j_ktEg3xESoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
-                )
-            )
-        )
-
-        val book2 = UserBook(
-            item = Item(
-                volumeInfo = VolumeInfo(
-                    title = "A Streetcar Named Desire", authors = listOf("Tennessee Williams"),
-                    imageLinks = ImageLinks("http://books.google.com/books/content?id=-qO2F_suXzwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
-                )
-            )
-        )
-        currentlyReadingAdapter?.add(listOf(book1, book2))
-        currentlyReadingAdapter?.notifyDataSetChanged()
+        toast(message)
     }
 
 }

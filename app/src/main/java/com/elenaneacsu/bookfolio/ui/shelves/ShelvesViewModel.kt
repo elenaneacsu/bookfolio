@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 /**
@@ -23,15 +25,19 @@ class ShelvesViewModel @Inject constructor(
 
     val username = repository.getUserName()
 
-    private val _shelvesResult = MutableLiveData<Result<List<Shelf>>>()
-    val shelvesResult: LiveData<Result<List<Shelf>>>
+    private val _shelvesResult =
+        MutableLiveData<Result<Pair<List<Shelf>, List<BookDetailsMapper>>>>()
+    val shelvesResult: LiveData<Result<Pair<List<Shelf>, List<BookDetailsMapper>>>>
         get() = _shelvesResult
 
-    fun getShelves() = makeRequest(resourceString, ioContext, _shelvesResult) {
-        _shelvesResult.postValue(Result.loading())
+    fun getShelvesScreenInfo() = makeRequest(resourceString, ioContext, _shelvesResult) {
+        supervisorScope {
+            _shelvesResult.postValue(Result.loading())
 
-        val shelves = repository.getShelves()
-        _shelvesResult.postValue(Result.success(shelves))
+            val screenFullInfo = repository.getShelvesScreenInfo()
+
+            _shelvesResult.postValue(Result.success(screenFullInfo))
+        }
     }
 
 }

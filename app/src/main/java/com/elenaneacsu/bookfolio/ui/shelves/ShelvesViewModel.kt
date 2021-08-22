@@ -6,6 +6,7 @@ import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
 import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.Shelf
+import com.elenaneacsu.bookfolio.models.ShelfType
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
 import com.elenaneacsu.bookfolio.viewmodel.CoroutineContextProvider
@@ -24,6 +25,7 @@ class ShelvesViewModel @Inject constructor(
 ) : BaseViewModel(resourceString, coroutineContextProvider) {
 
     val username = repository.getUserName()
+    var currentlyReadingShelf: Shelf? = null
 
     private val _shelvesResult =
         MutableLiveData<Result<Pair<List<Shelf>, List<BookDetailsMapper>>>>()
@@ -35,6 +37,8 @@ class ShelvesViewModel @Inject constructor(
             _shelvesResult.postValue(Result.loading())
 
             val screenFullInfo = repository.getShelvesScreenInfo()
+            currentlyReadingShelf =
+                screenFullInfo.first.firstOrNull { it.name == ShelfType.CURRENTLY_READING.valueAsString }
 
             _shelvesResult.postValue(Result.success(screenFullInfo))
         }

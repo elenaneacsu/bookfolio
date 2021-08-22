@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elenaneacsu.bookfolio.R
@@ -28,6 +29,8 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
     ) {
 
     private var bookDetailsMapper: BookDetailsMapper? = null
+    private var shelf: Shelf? = null
+
     private var bottomSheetDialog: BottomSheetDialog? = null
 
     override fun onCreateView(
@@ -51,6 +54,7 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
 
         bookDetailsMapper = args.book
         viewBinding.book = bookDetailsMapper
+        shelf = args.shelf
     }
 
     override fun initViews() {
@@ -78,6 +82,14 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
                 showMaterialDatePicker(false, { it.dismiss() }, {
                     endDate.text = it.toStringDate()
                 })
+            }
+
+            journalButton.setOnOneOffClickListener {
+                shelf?.let { currentShelf ->
+                    bookDetailsMapper?.let { book ->
+                        viewModel.getBookJournal(currentShelf, book)
+                    } ?: showBookJournalError()
+                } ?: showBookJournalError()
             }
         }
 
@@ -107,6 +119,21 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
                     bottomSheetDialog?.dismiss()
                     hideProgress()
                     successAlert("Book successfully added")
+                }
+                Result.Status.ERROR -> {
+                    hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
+
+        viewModel.bookJournalResult.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    val direction =
+                        BookDetailsFragmentDirections.actionBookDetailsFragmentToJournalFragment(it.data)
+                    findNavController().navigate(direction)
                 }
                 Result.Status.ERROR -> {
                     hideProgress()
@@ -151,4 +178,7 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
 
         bottomSheetDialog?.show()
     }
+
+    private fun showBookJournalError() =
+        kotlin.run { errorAlert(getString(R.string.book_journal_error)) }
 }

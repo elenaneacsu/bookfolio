@@ -13,5 +13,5 @@ data class UserBook(
     var startDate: String? = null,
     var endDate: String? = null,
     var rating: Int? = null,
-    var quotes: List<Quote>? = null
+    var journal: BookJournal? = null
 ): Parcelable

@@ -148,7 +148,7 @@ class ShelfFragment : BookAdapter.OnItemClickListener,
     }
 
     override fun onBookClicked(book: BookDetailsMapper) {
-        val direction = ShelfFragmentDirections.actionShelfFragmentToBookDetails(book)
+        val direction = ShelfFragmentDirections.actionShelfFragmentToBookDetails(book, shelf)
         findNavController().navigate(direction)
     }
 

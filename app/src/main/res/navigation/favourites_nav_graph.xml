@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/favourites_nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/favourites_nav_graph"
     app:startDestination="@id/favouritesFragment">
 
     <fragment
         android:id="@+id/favouritesFragment"
         android:name="com.elenaneacsu.bookfolio.ui.favourites.FavouritesFragment"
-        android:label="FavouritesFragment" />
+        android:label="FavouritesFragment">
+
+        <argument
+            android:name="journal"
+            app:argType="com.elenaneacsu.bookfolio.models.BookJournal"
+            app:nullable="true" />
+    </fragment>
 </navigation>

@@ -13,7 +13,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 class BookDetailsMapper(
-    private val userBook: UserBook? = null,
+    val userBook: UserBook? = null,
     private val apiBook: FullItemResponse? = null
 ) : Parcelable {
     fun getItemApiBook() = Item(apiBook?.id, apiBook?.volumeInfo)

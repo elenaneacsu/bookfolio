@@ -1,7 +1,6 @@
 package com.elenaneacsu.bookfolio.ui.search.book_details
 
-import com.elenaneacsu.bookfolio.models.Shelf
-import com.elenaneacsu.bookfolio.models.UserBook
+import com.elenaneacsu.bookfolio.models.*
 import com.elenaneacsu.bookfolio.ui.shelves.ShelvesRepository
 import com.elenaneacsu.bookfolio.viewmodel.BaseRepository
 import kotlinx.coroutines.Deferred
@@ -25,6 +24,22 @@ class BookDetailsRepository @Inject constructor(private val shelvesRepository: S
             updateNumberOfBooksInShelfAsync(shelf, isIncremented = true)
 
         awaitAll(bookAddedIntoShelfDeferred, numberOfBooksInShelfDeferred)
+
+    }
+
+    suspend fun getBookJournal(shelf: Shelf, book: UserBook): BookJournal {
+        val shelfTypeName = ShelfType.getShelfType(shelf.name!!)?.valueAsString
+
+        val bookJournal = shelfTypeName?.let { shelfName ->
+            book.item?.id?.let { bookId ->
+                getMainDocumentOfRegisteredUser()?.collection(shelfName)?.document(bookId)
+                    ?.collection("journal")?.get()?.await()
+            }
+        }
+
+        val quotes =
+            bookJournal?.documents?.mapNotNull { it.toObject(Quote::class.java) } ?: mutableListOf()
+        return BookJournal(quotes)
     }
 
     private suspend fun addBookIntoShelfAsync(book: UserBook, shelf: Shelf): Deferred<Void?> {

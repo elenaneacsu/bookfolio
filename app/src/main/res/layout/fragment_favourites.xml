@@ -32,7 +32,7 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/Toolbar"
                 app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
-                app:title="My book journal" />
+                app:title="Favourites" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

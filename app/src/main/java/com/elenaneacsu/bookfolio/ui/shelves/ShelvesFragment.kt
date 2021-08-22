@@ -39,7 +39,10 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        (activity as? MainActivity)?.updateStatusBarColor(R.color.primary, false)
+        (activity as? MainActivity)?.apply {
+            updateStatusBarColor(R.color.primary, false)
+            manageBottomNavigationVisibility(View.VISIBLE)
+        }
 
         return view
     }
@@ -123,7 +126,10 @@ class ShelvesFragment : ShelfAdapter.OnItemClickListener,
     }
 
     override fun onBookClicked(book: BookDetailsMapper) {
-        val direction = ShelvesFragmentDirections.actionShelvesFragmentToBookDetails(book)
+        val direction = ShelvesFragmentDirections.actionShelvesFragmentToBookDetails(
+            book,
+            viewModel.currentlyReadingShelf
+        )
         findNavController().navigate(direction)
     }
 

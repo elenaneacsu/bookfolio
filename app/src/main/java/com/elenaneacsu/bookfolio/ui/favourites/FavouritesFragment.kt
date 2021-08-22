@@ -1,12 +1,14 @@
 package com.elenaneacsu.bookfolio.ui.favourites
 
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentFavouritesBinding
-import com.elenaneacsu.bookfolio.extensions.alert
-import com.elenaneacsu.bookfolio.extensions.negativeButton
-import com.elenaneacsu.bookfolio.extensions.positiveButton
+import com.elenaneacsu.bookfolio.extensions.*
 import com.elenaneacsu.bookfolio.models.Quote
+import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +23,20 @@ class FavouritesFragment: BaseMvvmFragment<FavouritesViewModel, FragmentFavourit
 
     private var quotesAdapter: QuotesAdapter? = null
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        (activity as? MainActivity)?.apply {
+            updateStatusBarColor(R.color.primary, false)
+            viewBinding.pullToRefresh.setColorSchemeColors(getThemeColor(R.attr.colorAccent))
+        }
+        return view
+    }
+
+
     override fun initViews() {
         super.initViews()
 
@@ -28,12 +44,17 @@ class FavouritesFragment: BaseMvvmFragment<FavouritesViewModel, FragmentFavourit
             quotesAdapter = QuotesAdapter(it)
         }
 
-        viewBinding.quotesRecyclerView.adapter = quotesAdapter
-        mockData()
+        viewBinding.apply {
+            toolbar.navigationIcon = null
 
-        viewBinding.temporaryFab.setOnOneOffClickListener {
-            showDialogToAddQuote()
+            quotesRecyclerView.adapter = quotesAdapter
+
+            temporaryFab.setOnOneOffClickListener {
+                showDialogToAddQuote()
+            }
         }
+
+        mockData()
     }
 
     override fun hideProgress() {

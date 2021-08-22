@@ -93,7 +93,6 @@ class SearchFragment : BookAdapter.OnItemClickListener,
         }
 
         viewBinding.booksRecyclerView.adapter = booksAdapter
-
     }
 
     override fun initObservers() {

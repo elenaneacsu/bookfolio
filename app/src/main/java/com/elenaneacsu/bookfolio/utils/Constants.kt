@@ -19,6 +19,7 @@ class Constants {
 
         const val SPACE = " "
         const val PLUS = "+"
+        const val EMPTY = ""
 
         const val AUTHORS_SEPARATOR = ", "
         const val CATEGORIES_SEPARATOR = " / "

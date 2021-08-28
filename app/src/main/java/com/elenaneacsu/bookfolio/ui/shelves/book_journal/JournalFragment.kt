@@ -1,11 +1,8 @@
 package com.elenaneacsu.bookfolio.ui.shelves.book_journal
 
 import android.Manifest
-import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.SystemClock
 import android.provider.MediaStore
@@ -14,25 +11,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentFavouritesBinding
 import com.elenaneacsu.bookfolio.extensions.*
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
+import com.elenaneacsu.bookfolio.models.BookJournal
 import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.ui.favourites.QuotesAdapter
+import com.elenaneacsu.bookfolio.utils.Constants
 import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
+import com.google.android.material.textfield.TextInputEditText
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.IOException
@@ -44,6 +39,11 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
 
     private var quotesAdapter: QuotesAdapter? = null
     private var currentPhotoFile: File? = null
+    private var alertDialog: AlertDialog? = null
+    private var dialogView: View? = null
+
+    private var book: BookDetailsMapper? = null
+    private var journal: BookJournal? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +56,17 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
             viewBinding.pullToRefresh.setColorSchemeColors(getThemeColor(R.attr.colorAccent))
         }
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bundle = arguments ?: return
+
+        val args = JournalFragmentArgs.fromBundle(bundle)
+
+        book = args.book
+        viewBinding.book = book
+        journal = args.journal
     }
 
     override fun initViews() {
@@ -97,7 +108,7 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == TAKE_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 val image =
                     currentPhotoFile?.toUri()?.let {
                         InputImage.fromFilePath(
@@ -105,73 +116,77 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
                             it
                         )
                     } ?: run {
-                        logDebug("mare chestie null la currentPhotoFile")
+                        logDebug("null la currentPhotoFile")
                         null
                     }
 
                 image?.let {
                     val recognizer = TextRecognition.getClient()
-                    val result = recognizer.process(it)
+                    recognizer.process(it)
                         .addOnSuccessListener { visionText ->
-                            processTextRecognitionResult(visionText)
+                            val text = processTextRecognitionResult(visionText)
+
                         }
                         .addOnFailureListener { e ->
                             logError(e.message, e)
                         }
-                } ?: logDebug("mare chestie null la image")
+                } ?: logDebug("null la image")
             }
         }
     }
 
-    private fun processTextRecognitionResult(texts: Text) {
+    private fun processTextRecognitionResult(texts: Text): String {
         val blocks: List<Text.TextBlock> = texts.textBlocks
         if (blocks.isEmpty()) {
             toast("No text found")
             Log.d("TAG", "ml text: No text found")
-            return
+            return Constants.EMPTY
         }
+        val textResult = StringBuilder()
         for (i in blocks.indices) {
             val lines: List<Text.Line> = blocks[i].lines
-            for (j in lines.indices) {
-                val elements: List<Text.Element> = lines[j].elements
-                for (el in elements) {
-                    Log.d("TAG", "ml text: " + el.text)
-                }
+            for (line in lines) {
+                if (lines.indexOf(line) == lines.size - 1)
+                    textResult.append(line.text)
+                else
+                    textResult.append(line.text + "\n")
             }
         }
+        return textResult.toString()
     }
 
     private fun showDialogToAddQuote() {
         context?.let { ctx ->
 
-            val alertDialog =
-                ctx.createCustomDialog(cancelable = true, style = R.style.AlertDialogStyle) {
+            alertDialog =
+                ctx.createCustomDialog(cancelable = false, style = R.style.AlertDialogStyle) {
 
                     positiveButton("Save") {
-
+                        val text =
+                            dialogView?.findViewById<TextInputEditText>(R.id.quote)?.text?.toString()
+                        if (text?.isNotEmpty() == true)
+                            book?.let { it1 -> viewModel.addQuoteToJournal(text, it1) }
                     }
 
-                    negativeButton("Cancel") {
-
-                    }
+                    negativeButton("Cancel") {}
                 }
 
-            val dialogView =
-                alertDialog.layoutInflater.inflate(R.layout.add_quote_dialog_layout, null)
-            alertDialog.setView(dialogView)
-            dialogView.findViewById<ImageView>(R.id.take_photo_icon)?.setOnOneOffClickListener {
+            dialogView =
+                alertDialog!!.layoutInflater.inflate(R.layout.add_quote_dialog_layout, null)
+            alertDialog!!.setView(dialogView)
+            dialogView!!.findViewById<ImageView>(R.id.take_photo_icon)?.setOnOneOffClickListener {
                 requireContext().requestCameraPermission(object : PermissionsCallback {
                     override fun onPermissionRequest(granted: Boolean) {
                         if (granted) {
                             dispatchTakePictureIntent()
-                        }  else {
+                        } else {
                             toast("Permissions not granted by the user.")
                         }
                     }
                 })
             }
 
-            alertDialog.show()
+            alertDialog!!.show()
         }
     }
 
@@ -201,49 +216,9 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
         }
     }
 
-    fun Context.createImageFile(imageFileName: String): File? {
-        return try {
-            val parent = File(cacheDir, "images")
-            parent.mkdirs()
-            val file = File(parent, imageFileName)
-            Log.d("IMAGE", "createImageFile - ${file.absolutePath}")
-            if (file.exists())
-                file.delete()
-            file
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-
-    fun Context.requestCameraPermission(callback: PermissionsCallback) {
-        requestSinglePermission(Manifest.permission.CAMERA, callback)
-    }
-
-
-    fun Context.requestSinglePermission(permission: String, callback: PermissionsCallback) {
-        Dexter.withContext(this)
-            .withPermission(permission)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-                    // User has granted the permission
-                    callback.onPermissionRequest(granted = true)
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permission: PermissionRequest?,
-                    token: PermissionToken?,
-                ) {
-                    // User previously denied the permission, request them again
-                    token?.continuePermissionRequest()
-                }
-
-                override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-                    // User has denied the permission
-                    callback.onPermissionRequest(granted = false)
-                }
-            })
-            .check()
+    private fun manageDialogAfterTextRecognition(text: String) {
+        dialogView?.findViewById<TextInputEditText>(R.id.quote)?.setText(text)
+        dialogView
     }
 
     companion object {
@@ -251,12 +226,4 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
-}
-
-
-interface PermissionsCallback {
-
-    // Pass request granted status i.e true or false
-    fun onPermissionRequest(granted: Boolean)
-
 }

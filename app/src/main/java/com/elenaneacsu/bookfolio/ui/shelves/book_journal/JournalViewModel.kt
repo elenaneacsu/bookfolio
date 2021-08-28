@@ -1,5 +1,6 @@
 package com.elenaneacsu.bookfolio.ui.shelves.book_journal
 
+import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.ui.search.book_details.BookDetailsRepository
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
@@ -18,4 +19,8 @@ class JournalViewModel @Inject constructor(
 ) : BaseViewModel(
     resourceString, coroutineContextProvider
 ) {
+
+    fun addQuoteToJournal(text: String, book: BookDetailsMapper) {
+
+    }
 }

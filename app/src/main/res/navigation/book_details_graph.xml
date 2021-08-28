@@ -26,6 +26,10 @@
                 android:name="journal"
                 app:argType="com.elenaneacsu.bookfolio.models.BookJournal"
                 app:nullable="true" />
+            <argument
+                android:name="book"
+                app:argType="com.elenaneacsu.bookfolio.models.BookDetailsMapper"
+                app:nullable="true" />
         </action>
     </fragment>
     <fragment
@@ -35,6 +39,10 @@
         <argument
             android:name="journal"
             app:argType="com.elenaneacsu.bookfolio.models.BookJournal"
+            app:nullable="true" />
+        <argument
+            android:name="book"
+            app:argType="com.elenaneacsu.bookfolio.models.BookDetailsMapper"
             app:nullable="true" />
     </fragment>
 </navigation>

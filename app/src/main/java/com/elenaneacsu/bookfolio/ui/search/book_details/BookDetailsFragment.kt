@@ -132,7 +132,10 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
                 Result.Status.LOADING -> showProgress()
                 Result.Status.SUCCESS -> {
                     val direction =
-                        BookDetailsFragmentDirections.actionBookDetailsFragmentToJournalFragment(it.data)
+                        BookDetailsFragmentDirections.actionBookDetailsFragmentToJournalFragment(
+                            it.data,
+                            bookDetailsMapper
+                        )
                     findNavController().navigate(direction)
                 }
                 Result.Status.ERROR -> {

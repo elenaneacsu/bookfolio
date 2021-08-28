@@ -21,11 +21,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/ic_close_24dp"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
+            android:inputType="textMultiLine"
+            android:maxLines="10"
             android:lineSpacingMultiplier="1.2"
-            android:paddingEnd="@dimen/icon_end_padding"
-            android:text="" />
+            android:paddingEnd="@dimen/icon_end_padding" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView

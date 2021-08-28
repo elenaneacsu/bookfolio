@@ -5,6 +5,11 @@
 
     <data>
 
+        <import type="com.elenaneacsu.bookfolio.models.BookDetailsMapper" />
+
+        <variable
+            name="book"
+            type="BookDetailsMapper" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +36,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/Toolbar"
+                app:subtitle="@{book.getTitle()}"
                 app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
                 app:title="Favourites" />
         </com.google.android.material.appbar.AppBarLayout>
@@ -74,11 +80,6 @@
             android:clickable="true"
             android:visibility="gone"
             tools:visibility="visible" />
-
-<!--        <androidx.camera.view.PreviewView-->
-<!--            android:id="@+id/cameraView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

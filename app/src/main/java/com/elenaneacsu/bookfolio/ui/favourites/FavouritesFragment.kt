@@ -46,6 +46,7 @@ class FavouritesFragment: BaseMvvmFragment<FavouritesViewModel, FragmentFavourit
 
         viewBinding.apply {
             toolbar.navigationIcon = null
+            toolbar.subtitle = null
 
             quotesRecyclerView.adapter = quotesAdapter
 

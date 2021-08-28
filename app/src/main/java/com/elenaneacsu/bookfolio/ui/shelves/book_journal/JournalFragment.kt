@@ -1,32 +1,22 @@
 package com.elenaneacsu.bookfolio.ui.shelves.book_journal
 
-//import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import android.Manifest
 import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.content.ActivityNotFoundException
-import android.content.Context.CAMERA_SERVICE
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
-import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.provider.MediaStore
 import android.util.Log
-import android.util.SparseIntArray
 import android.view.LayoutInflater
-import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
-import androidx.camera.core.*
-import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
-import androidx.camera.core.ImageCapture.FLASH_MODE_AUTO
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentFavouritesBinding
 import com.elenaneacsu.bookfolio.extensions.*
@@ -37,10 +27,15 @@ import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.io.IOException
-import java.util.*
-
 
 @AndroidEntryPoint
 class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBinding>(
@@ -48,9 +43,7 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
 ) {
 
     private var quotesAdapter: QuotesAdapter? = null
-
-
-    private var imageCapture: ImageCapture? = null
+    private var currentPhotoFile: File? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,17 +55,6 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
             updateStatusBarColor(R.color.primary, false)
             viewBinding.pullToRefresh.setColorSchemeColors(getThemeColor(R.attr.colorAccent))
         }
-
-        // Request camera permissions
-//        if (allPermissionsGranted()) {
-//            startCamera()
-//        } else {
-//            activity?.let {
-//                ActivityCompat.requestPermissions(
-//                    it, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-//            }
-//        }
-
         return view
     }
 
@@ -96,7 +78,6 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
 
             temporaryFab.setOnOneOffClickListener {
                 showDialogToAddQuote()
-//                dispatchTakePictureIntent()
             }
         }
     }
@@ -114,63 +95,31 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
     override fun successAlert(message: String) {
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray) {
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                startCamera()
-            } else {
-                toast(
-                    "Permissions not granted by the user.")
-            }
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-
-            var image: InputImage? = null
-            try {
-                image = InputImage.fromFilePath(requireContext(), data.data!!)
-
-                val recognizer = TextRecognition.getClient()
-                val result = recognizer.process(image)
-                    .addOnSuccessListener { visionText ->
-                        // Task completed successfully
-                        // ...
-                        processTextRecognitionResult(visionText)
-//                    val resultText = visionText.text
-//                    for (block in visionText.textBlocks) {
-//                        Log.d("TAG", "ml text: "+block.text)
-//                        val blockText = block.text
-//                        val blockCornerPoints = block.cornerPoints
-//                        val blockFrame = block.boundingBox
-//                        for (line in block.lines) {
-//                            val lineText = line.text
-//                            val lineCornerPoints = line.cornerPoints
-//                            val lineFrame = line.boundingBox
-//                            for (element in line.elements) {
-//                                val elementText = element.text
-//                                val elementCornerPoints = element.cornerPoints
-//                                val elementFrame = element.boundingBox
-//                            }
-//                        }
-//                    }
-                    }
-                    .addOnFailureListener { e ->
-                        // Task failed with an exception
-                        // ...
+        if (requestCode == TAKE_PHOTO_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
+                val image =
+                    currentPhotoFile?.toUri()?.let {
+                        InputImage.fromFilePath(
+                            requireContext(),
+                            it
+                        )
+                    } ?: run {
+                        logDebug("mare chestie null la currentPhotoFile")
+                        null
                     }
 
-            } catch (e: IOException) {
-                e.printStackTrace()
+                image?.let {
+                    val recognizer = TextRecognition.getClient()
+                    val result = recognizer.process(it)
+                        .addOnSuccessListener { visionText ->
+                            processTextRecognitionResult(visionText)
+                        }
+                        .addOnFailureListener { e ->
+                            logError(e.message, e)
+                        }
+                } ?: logDebug("mare chestie null la image")
             }
-            //load image to ml
-//            imageView.setImageBitmap(imageBitmap)
-
-
         }
     }
 
@@ -185,11 +134,8 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
             val lines: List<Text.Line> = blocks[i].lines
             for (j in lines.indices) {
                 val elements: List<Text.Element> = lines[j].elements
-//                for (k in elements.indices) {
-//                    Log.d("TAG", "ml text: "+)
-//                }
-                for(el in elements) {
-                    Log.d("TAG", "ml text: "+el.text)
+                for (el in elements) {
+                    Log.d("TAG", "ml text: " + el.text)
                 }
             }
         }
@@ -198,182 +144,119 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
     private fun showDialogToAddQuote() {
         context?.let { ctx ->
 
-            val alertDialog = ctx.createCustomDialog(cancelable = true, style = R.style.AlertDialogStyle) {
+            val alertDialog =
+                ctx.createCustomDialog(cancelable = true, style = R.style.AlertDialogStyle) {
 
-                positiveButton("Save") {
+                    positiveButton("Save") {
 
+                    }
+
+                    negativeButton("Cancel") {
+
+                    }
                 }
 
-                negativeButton("Cancel") {
-
-                }
-            }
-
-            val dialogView = alertDialog.layoutInflater.inflate(R.layout.add_quote_dialog_layout, null)
+            val dialogView =
+                alertDialog.layoutInflater.inflate(R.layout.add_quote_dialog_layout, null)
             alertDialog.setView(dialogView)
             dialogView.findViewById<ImageView>(R.id.take_photo_icon)?.setOnOneOffClickListener {
-                dispatchTakePictureIntent()
+                requireContext().requestCameraPermission(object : PermissionsCallback {
+                    override fun onPermissionRequest(granted: Boolean) {
+                        if (granted) {
+                            dispatchTakePictureIntent()
+                        }  else {
+                            toast("Permissions not granted by the user.")
+                        }
+                    }
+                })
             }
 
             alertDialog.show()
         }
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        context?.let { ctx ->
-            ContextCompat.checkSelfPermission(
-                ctx, it)
-        } == PackageManager.PERMISSION_GRANTED
-    }
-
-    val REQUEST_IMAGE_CAPTURE = 1
-
     private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        try {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-        } catch (e: ActivityNotFoundException) {
-            // display error state to the user
+        currentPhotoFile = null
+        activity?.let {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (takePictureIntent.resolveActivity(it.packageManager) != null) {
+                var photoFile: File? = null
+                try {
+                    photoFile = it.createImageFile("profile_${SystemClock.elapsedRealtime()}.jpg")
+                    currentPhotoFile = photoFile
+                } catch (ex: IOException) {
+                    logError(ex.message, ex)
+                }
+
+                if (photoFile != null) {
+                    val photoURI = FileProvider.getUriForFile(
+                        it,
+                        "com.elenaneacsu.bookfolio",
+                        photoFile
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST_CODE)
+                }
+            }
         }
-//        if (allPermissionsGranted()) {
-//            startCamera()
-//        } else {
-//            activity?.let {
-//                ActivityCompat.requestPermissions(
-//                    it, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-//            }
-//        }
+    }
+
+    fun Context.createImageFile(imageFileName: String): File? {
+        return try {
+            val parent = File(cacheDir, "images")
+            parent.mkdirs()
+            val file = File(parent, imageFileName)
+            Log.d("IMAGE", "createImageFile - ${file.absolutePath}")
+            if (file.exists())
+                file.delete()
+            file
+        } catch (e: Exception) {
+            null
+        }
     }
 
 
-    private fun buildImageCaptureUseCase() {
-        imageCapture =  ImageCapture.Builder()
-//            .setTargetAspectRatio(aspectRatio)
-//            .setTargetRotation(rotation)
-//            .setTargetResolution(resolution)
-            .setFlashMode(FLASH_MODE_AUTO)
-            .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
-            .build()
+    fun Context.requestCameraPermission(callback: PermissionsCallback) {
+        requestSinglePermission(Manifest.permission.CAMERA, callback)
     }
 
-    fun buildPreviewUseCase(): Preview {
-        return Preview.Builder()
-            // Set the preview resolution
-//            .setTargetResolution(resolution)
-            // Set the preview aspect ratio. The resolution and aspect ratio cannot both be set tat the same time.
-//            .setTargetAspectRatio()
-            // Set the rotation the preview frames should be received in. This should typically be the display rotation.
-//            .setTargetRotation(0)
-            .build()
-    }
 
-    private fun startCamera() {
-//        buildImageCaptureUseCase()
-//        val preview = buildPreviewUseCase()
-//        val surfaceProvider = previewView.createSurfaceProvider(cameraInfo)
-//
-//// Attach the SurfaceProvider to the preview to start displaying the camera preview.
-//        preview.setSurfaceProvider(surfaceProvider)
-//
-////        val cameraProviderFuture = context?.let { ProcessCameraProvider.getInstance(it) }
-////
-////        cameraProviderFuture?.addListener(Runnable {
-////            // Used to bind the lifecycle of cameras to the lifecycle owner
-////            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-////
-////            // Preview
-////            val preview = Preview.Builder()
-////                .build()
-////                .also {
-////                    it.setSurfaceProvider(viewBinding.cameraView.surfaceProvider)
-////                }
-////
-////            imageCapture = ImageCapture.Builder()
-////                .build()
-////
-////            // Select back camera as a default
-////            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-////
-////            try {
-////                // Unbind use cases before rebinding
-////                cameraProvider.unbindAll()
-////
-////                // Bind use cases to camera
-////                cameraProvider.bindToLifecycle(
-////                    this, cameraSelector, preview, imageCapture)
-////
-////            } catch(exc: Exception) {
-////                Log.e(TAG, "Use case binding failed", exc)
-////            }
-////
-////        }, ContextCompat.getMainExecutor(context))
-//
-//        imageCapture?.takePicture(ContextCompat.getMainExecutor(context), object: ImageCapture.OnImageCapturedCallback() {
-//            override fun onCaptureSuccess(imageProxy: ImageProxy) {
-//                // Use the image, then make sure to close it.
-//                val img = InputImage.fromMediaImage(imageProxy.image, imageProxy.imageInfo.rotationDegrees)
-//
-//                val result = recognizer.process(img)
-//                    .addOnSuccessListener { visionText ->
-//                        // Task completed successfully
-//                        processTextRecognitionResult(visionText)
-//                    }
-//                    .addOnFailureListener { e ->
-//                        // Task failed with an exception
-//                        // ...
-//                    }
-//                imageProxy.close()
-//            }
-//
-//            override fun onError(exception: ImageCaptureException) {
-//                val errorType = exception.imageCaptureError
-//                errorAlert(errorType.toString())
-//            }
-//        })
+    fun Context.requestSinglePermission(permission: String, callback: PermissionsCallback) {
+        Dexter.withContext(this)
+            .withPermission(permission)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+                    // User has granted the permission
+                    callback.onPermissionRequest(granted = true)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permission: PermissionRequest?,
+                    token: PermissionToken?,
+                ) {
+                    // User previously denied the permission, request them again
+                    token?.continuePermissionRequest()
+                }
+
+                override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+                    // User has denied the permission
+                    callback.onPermissionRequest(granted = false)
+                }
+            })
+            .check()
     }
 
     companion object {
-        private const val TAG = "CameraXBasic"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        const val TAKE_PHOTO_REQUEST_CODE = 8001
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private val MY_CAMERA_ID = "my_camera_id"
     }
+}
 
-    private val ORIENTATIONS = SparseIntArray()
 
-    init {
-        ORIENTATIONS.append(Surface.ROTATION_0, 0)
-        ORIENTATIONS.append(Surface.ROTATION_90, 90)
-        ORIENTATIONS.append(Surface.ROTATION_180, 180)
-        ORIENTATIONS.append(Surface.ROTATION_270, 270)
-    }
+interface PermissionsCallback {
 
-    /**
-     * Get the angle by which an image must be rotated given the device's current
-     * orientation.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Throws(CameraAccessException::class)
-    private fun getRotationCompensation(cameraId: String, activity: Activity, isFrontFacing: Boolean): Int {
-        // Get the device's current rotation relative to its "native" orientation.
-        // Then, from the ORIENTATIONS table, look up the angle the image must be
-        // rotated to compensate for the device's rotation.
-        val deviceRotation = activity.windowManager.defaultDisplay.rotation
-        var rotationCompensation = ORIENTATIONS.get(deviceRotation)
-
-        // Get the device's sensor orientation.
-        val cameraManager = activity.getSystemService(CAMERA_SERVICE) as CameraManager
-        val sensorOrientation = cameraManager
-            .getCameraCharacteristics(cameraId)
-            .get(CameraCharacteristics.SENSOR_ORIENTATION)!!
-
-        if (isFrontFacing) {
-            rotationCompensation = (sensorOrientation + rotationCompensation) % 360
-        } else { // back-facing
-            rotationCompensation = (sensorOrientation - rotationCompensation + 360) % 360
-        }
-        return rotationCompensation
-    }
+    // Pass request granted status i.e true or false
+    fun onPermissionRequest(granted: Boolean)
 
 }

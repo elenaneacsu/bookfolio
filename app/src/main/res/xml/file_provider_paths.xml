@@ -1,0 +1,9 @@
+<paths>
+    <cache-path
+        name="cache"
+        path="/" />
+
+    <external-path
+        name="images"
+        path="/" />
+</paths>

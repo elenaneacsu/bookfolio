@@ -1,1 +1,1 @@
-/Users/eneacsu/Bookfolio/buildSrc/build/classes/kotlin/main/Deps.class:/Users/eneacsu/Bookfolio/buildSrc/build/classes/kotlin/main/Versions.class
+/Users/grrigore/Documents/GitHub/bookfolio/buildSrc/build/classes/kotlin/main/Deps.class:/Users/grrigore/Documents/GitHub/bookfolio/buildSrc/build/classes/kotlin/main/Versions.class

@@ -33,16 +33,16 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/medium_padding"
         android:src="@drawable/ic_camera_48dp"
-        android:id="@+id/snap"
+        android:id="@+id/take_photo_icon"
         app:layout_constraintTop_toBottomOf="@id/parent_layout_quote"
         app:layout_constraintStart_toStartOf="parent" />
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/snap"
+        app:layout_constraintStart_toEndOf="@id/take_photo_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/snap"
-        app:layout_constraintBottom_toBottomOf="@id/snap"
+        app:layout_constraintTop_toTopOf="@id/take_photo_icon"
+        app:layout_constraintBottom_toBottomOf="@id/take_photo_icon"
         android:layout_marginEnd="@dimen/large_margin"
         android:textSize="14sp"
         android:text="...or take a photo of the page to speed up the process!" />

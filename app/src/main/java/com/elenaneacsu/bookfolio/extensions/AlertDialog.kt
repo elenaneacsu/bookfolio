@@ -3,6 +3,7 @@ package com.elenaneacsu.bookfolio.extensions
 import android.content.Context
 import android.content.DialogInterface
 import androidx.annotation.StyleRes
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
@@ -41,4 +42,16 @@ fun MaterialAlertDialogBuilder.neutralButton(
     handleClick: (dialogInterface: DialogInterface) -> Unit = { it.dismiss() }
 ) {
     this.setNeutralButton(text) { dialogInterface, _ -> handleClick(dialogInterface) }
+}
+
+fun Context.createCustomDialog(
+    @StyleRes style: Int = 0,
+    cancelable: Boolean = false,
+    dialogBuilder: MaterialAlertDialogBuilder.() -> Unit
+): AlertDialog {
+    return MaterialAlertDialogBuilder(this, style)
+        .apply {
+            setCancelable(cancelable)
+            dialogBuilder()
+        }.create()
 }

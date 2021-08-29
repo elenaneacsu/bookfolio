@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.provider.MediaStore
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +18,7 @@ import androidx.core.net.toUri
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentFavouritesBinding
 import com.elenaneacsu.bookfolio.extensions.*
-import com.elenaneacsu.bookfolio.models.BookDetailsMapper
-import com.elenaneacsu.bookfolio.models.BookJournal
-import com.elenaneacsu.bookfolio.models.Quote
-import com.elenaneacsu.bookfolio.models.Shelf
+import com.elenaneacsu.bookfolio.models.*
 import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.ui.favourites.QuotesAdapter
 import com.elenaneacsu.bookfolio.utils.Constants
@@ -158,6 +154,7 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
                             quotesPair.second
                         )
                     }
+                    toast("Quote updated successfully.")
                     hideProgress()
                 }
                 Result.Status.ERROR -> {
@@ -202,7 +199,7 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
                         .addOnSuccessListener { visionText ->
                             val text = processTextRecognitionResult(visionText)
                             addQuoteDialogView?.findViewById<TextInputEditText>(R.id.quote)
-                                ?.setText(text)
+                                ?.append(text)
                         }
                         .addOnFailureListener { e ->
                             logError(e.message, e)
@@ -212,6 +209,10 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
         }
     }
 
+    override fun onQuoteFullTextClicked(quote: Quote) {
+        showDialogToAddQuote(quote)
+    }
+
     override fun onPageIconClicked(quote: Quote) {
         context?.let { ctx ->
             val editText = EditText(ctx).apply { inputType = InputType.TYPE_CLASS_NUMBER }
@@ -219,7 +220,13 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
                 setTitle("Add a page number")
                 setView(editText)
                 positiveButton("Save") {
-                    viewModel.updateQuoteData(shelf, book, quote, editText.text?.toString())
+                    viewModel.updateQuoteData(
+                        shelf,
+                        book,
+                        quote,
+                        QuoteKey.PAGE,
+                        editText.text?.toString()
+                    )
                 }
                 negativeButton("Cancel") {
                     it.dismiss()
@@ -228,11 +235,18 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
         }
     }
 
+    override fun onDateIconClicked(quote: Quote) {
+        showMaterialDatePicker(false, {
+            it.dismiss()
+        }, {
+            viewModel.updateQuoteData(shelf, book, quote, QuoteKey.DATE, it)
+        })
+    }
+
     private fun processTextRecognitionResult(texts: Text): String {
         val blocks: List<Text.TextBlock> = texts.textBlocks
         if (blocks.isEmpty()) {
             toast("No text found")
-            Log.d("TAG", "ml text: No text found")
             return Constants.EMPTY
         }
         val textResult = StringBuilder()
@@ -248,7 +262,7 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
         return textResult.toString()
     }
 
-    private fun showDialogToAddQuote() {
+    private fun showDialogToAddQuote(quote: Quote? = null) {
         context?.let { ctx ->
 
             addQuoteAlertDialog =
@@ -257,7 +271,10 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
                     positiveButton("Save") {
                         val text =
                             addQuoteDialogView?.findViewById<TextInputEditText>(R.id.quote)?.text?.toString()
-                        viewModel.addQuoteToJournal(shelf, book, text)
+                        if (quote == null)
+                            viewModel.addQuoteToJournal(shelf, book, text)
+                        else
+                            viewModel.updateQuoteData(shelf, book, quote, QuoteKey.TEXT, text)
                     }
 
                     negativeButton("Cancel") {}
@@ -266,18 +283,13 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
             addQuoteDialogView =
                 addQuoteAlertDialog!!.layoutInflater.inflate(R.layout.add_quote_dialog_layout, null)
             addQuoteAlertDialog!!.setView(addQuoteDialogView)
-            addQuoteDialogView!!.findViewById<ImageView>(R.id.take_photo_icon)
-                ?.setOnOneOffClickListener {
-                    requireContext().requestCameraPermission(object : PermissionsCallback {
-                        override fun onPermissionRequest(granted: Boolean) {
-                            if (granted) {
-                                dispatchTakePictureIntent()
-                            } else {
-                                toast("Permissions not granted by the user.")
-                            }
-                        }
-                    })
-                }
+            addQuoteDialogView!!.apply {
+                findViewById<ImageView>(R.id.take_photo_icon)
+                    ?.setOnOneOffClickListener {
+                        requireCameraPermission()
+                    }
+                findViewById<TextInputEditText>(R.id.quote)?.setText(quote?.text)
+            }
 
             addQuoteAlertDialog!!.show()
         }
@@ -307,6 +319,18 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
                 }
             }
         }
+    }
+
+    private fun requireCameraPermission() {
+        requireContext().requestCameraPermission(object : PermissionsCallback {
+            override fun onPermissionRequest(granted: Boolean) {
+                if (granted) {
+                    dispatchTakePictureIntent()
+                } else {
+                    toast("Permissions not granted by the user.")
+                }
+            }
+        })
     }
 
     companion object {

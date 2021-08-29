@@ -43,7 +43,8 @@ class JournalRepository @Inject constructor() : BaseRepository() {
         shelf: Shelf,
         book: BookDetailsMapper,
         quoteId: String,
-        page: String
+        fieldName: String,
+        fieldValue: Any
     ) {
         val shelfTypeName = shelf.name?.let { shelfName ->
             ShelfType.getShelfType(
@@ -54,7 +55,8 @@ class JournalRepository @Inject constructor() : BaseRepository() {
         shelfTypeName?.let { shelfName ->
             book.getId()?.let { bookId ->
                 getMainDocumentOfRegisteredUser()?.collection(shelfName)?.document(bookId)
-                    ?.collection("journal")?.document(quoteId)?.update("page", page)?.await()
+                    ?.collection("journal")?.document(quoteId)?.update(fieldName, fieldValue)
+                    ?.await()
             }
         }
     }

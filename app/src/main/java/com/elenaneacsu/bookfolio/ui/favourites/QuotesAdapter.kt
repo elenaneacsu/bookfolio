@@ -29,9 +29,19 @@ class QuotesAdapter(
         expansionsCollection.add(holder.itemBinding.expansionLayout)
     }
 
+    override fun onTextChanged(position: Int) {
+        val quote = _items[position]
+        itemClickListener.onQuoteFullTextClicked(quote)
+    }
+
     override fun onPageNumberChanged(position: Int) {
         val quote = _items[position]
         itemClickListener.onPageIconClicked(quote)
+    }
+
+    override fun onDateChanged(position: Int) {
+        val quote = _items[position]
+        itemClickListener.onDateIconClicked(quote)
     }
 
     fun addQuote(quote: Quote) {
@@ -41,10 +51,20 @@ class QuotesAdapter(
 
     fun updateQuote(quote: Quote, updatedQuote: Quote) {
         _items[_items.indexOf(quote)] = updatedQuote
-        notifyItemChanged(_items.indexOf(updatedQuote))
+        //the date is updated
+        if (quote.date != updatedQuote.date) {
+            _items.sortBy { it.date }
+            notifyDataSetChanged()
+        } else {
+            //other quote data is updated
+            notifyItemChanged(_items.indexOf(updatedQuote))
+            notifyItemRangeChanged(0, _items.size)
+        }
     }
 
     interface OnItemClickListener {
+        fun onQuoteFullTextClicked(quote: Quote)
         fun onPageIconClicked(quote: Quote)
+        fun onDateIconClicked(quote: Quote)
     }
 }

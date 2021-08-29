@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.extensions.Result
 import com.elenaneacsu.bookfolio.extensions.makeRequest
-import com.elenaneacsu.bookfolio.models.BookDetailsMapper
-import com.elenaneacsu.bookfolio.models.BookJournal
-import com.elenaneacsu.bookfolio.models.Quote
-import com.elenaneacsu.bookfolio.models.Shelf
+import com.elenaneacsu.bookfolio.models.*
 import com.elenaneacsu.bookfolio.ui.search.book_details.BookDetailsRepository
 import com.elenaneacsu.bookfolio.utils.ResourceString
 import com.elenaneacsu.bookfolio.viewmodel.BaseViewModel
@@ -68,16 +65,31 @@ class JournalViewModel @Inject constructor(
             }
         }
 
-    fun updateQuoteData(shelf: Shelf?, book: BookDetailsMapper?, quote: Quote, value: String?) =
+    fun updateQuoteData(
+        shelf: Shelf?,
+        book: BookDetailsMapper?,
+        quote: Quote,
+        key: QuoteKey,
+        value: Any?
+    ) =
         makeRequest(resourceString, ioContext, _updateQuoteResult) {
-            if (shelf == null || book == null) {
+            if (shelf == null || book == null || value == null) {
                 setError(resourceString.getString(R.string.default_error_message))
-            } else if (value?.isNullOrEmpty() == true) {
+            } else if (key == QuoteKey.PAGE && (value as? String).isNullOrEmpty()) {
                 setError(resourceString.getString(R.string.no_page_number_provided))
+            } else if (key == QuoteKey.TEXT && (value as? String).isNullOrEmpty()) {
+                setError(resourceString.getString(R.string.empty_quote))
             } else {
                 _updateQuoteResult.postValue(Result.loading())
-                repository.updateQuoteData(shelf, book, quote.id, value)
-                repository.quote = quote.copy(page = value)
+
+                repository.updateQuoteData(shelf, book, quote.id, key.valueAsString, value)
+
+                repository.quote = when (key) {
+                    QuoteKey.PAGE -> quote.copy(page = value as String)
+                    QuoteKey.DATE -> quote.copy(date = value as Long)
+                    else -> quote.copy(text = value as String)
+                }
+
                 //emit the old quote in order to find it in the adapter's list
                 _updateQuoteResult.postValue(Result.success(Pair(quote, repository.quote)))
             }

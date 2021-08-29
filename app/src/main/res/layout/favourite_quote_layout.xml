@@ -235,7 +235,6 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="May 21, 2021" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                <!--                android:text="@{DateKt.toStringDate(quote.date)}"-->
 
                 <LinearLayout
                     android:id="@+id/buttons_layout_container"
@@ -243,24 +242,50 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/edit_quote"
-                        style="@style/RoundedButton"
+                    <FrameLayout
+                        android:id="@+id/add_to_favourite"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/medium_margin"
                         android:layout_marginEnd="@dimen/small_margin"
                         android:layout_weight="1"
-                        android:text="@string/edit" />
+                        android:background="@drawable/button_rounded_corners"
+                        android:backgroundTint="?colorAccent"
+                        android:clickable="true"
+                        android:elevation="4dp"
+                        android:focusable="true"
+                        android:padding="4dp"
+                        android:visibility="visible">
 
-                    <Button
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_heart_white_outline_32dp" />
+                    </FrameLayout>
+
+                    <FrameLayout
                         android:id="@+id/remove_quote"
-                        style="@style/RoundedButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/medium_margin"
                         android:layout_weight="1"
-                        android:text="@string/remove" />
+                        android:background="@drawable/button_rounded_corners"
+                        android:backgroundTint="?colorAccent"
+                        android:clickable="true"
+                        android:elevation="4dp"
+                        android:focusable="true"
+                        android:padding="4dp"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_delete_white_outline_32dp" />
+                    </FrameLayout>
 
                 </LinearLayout>
 

@@ -12,18 +12,27 @@ class QuoteViewHolder(
     BaseViewHolder<Quote, FavouriteQuoteLayoutBinding>(itemBinding) {
 
     override fun bindItem(item: Quote) {
-        itemBinding.quote = item
-        itemBinding.pageIcon.setOnOneOffClickListener {
-            itemClickListener.onPageNumberChanged(adapterPosition)
+        itemBinding.apply {
+            quote = item
+
+            quoteFull.setOnOneOffClickListener {
+                itemClickListener.onTextChanged(adapterPosition)
+            }
+
+            pageIcon.setOnOneOffClickListener {
+                itemClickListener.onPageNumberChanged(adapterPosition)
+            }
+
+            dateIcon.setOnOneOffClickListener {
+                itemClickListener.onDateChanged(adapterPosition)
+            }
         }
         itemBinding.executePendingBindings()
     }
 
-    fun expandQuote() {
-        itemBinding.expansionLayout.expand(false)
-    }
-
     interface OnQuoteDataClickListener {
+        fun onTextChanged(position: Int)
         fun onPageNumberChanged(position: Int)
+        fun onDateChanged(position: Int)
     }
 }

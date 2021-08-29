@@ -19,3 +19,9 @@ data class Quote(
 ) : Parcelable {
     fun getFormattedDate() = date?.toStringDate()
 }
+
+enum class QuoteKey(val valueAsString: String) {
+    TEXT("text"),
+    PAGE("page"),
+    DATE("date")
+}

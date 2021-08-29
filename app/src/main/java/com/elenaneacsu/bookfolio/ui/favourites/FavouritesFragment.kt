@@ -178,7 +178,16 @@ class FavouritesFragment : QuotesAdapter.OnItemClickListener,
         }
     }
 
-    override fun onPageIconClicked(quote: Quote) {
-
+    override fun onQuoteFullTextClicked(quote: Quote) {
+        //todo implement
     }
+
+    override fun onPageIconClicked(quote: Quote) {
+        //todo implement
+    }
+
+    override fun onDateIconClicked(quote: Quote) {
+        //todo implement
+    }
+
 }

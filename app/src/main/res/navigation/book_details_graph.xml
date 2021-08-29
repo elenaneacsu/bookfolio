@@ -30,6 +30,10 @@
                 android:name="book"
                 app:argType="com.elenaneacsu.bookfolio.models.BookDetailsMapper"
                 app:nullable="true" />
+            <argument
+                android:name="shelf"
+                app:argType="com.elenaneacsu.bookfolio.models.Shelf"
+                app:nullable="true" />
         </action>
     </fragment>
     <fragment
@@ -43,6 +47,10 @@
         <argument
             android:name="book"
             app:argType="com.elenaneacsu.bookfolio.models.BookDetailsMapper"
+            app:nullable="true" />
+        <argument
+            android:name="shelf"
+            app:argType="com.elenaneacsu.bookfolio.models.Shelf"
             app:nullable="true" />
     </fragment>
 </navigation>

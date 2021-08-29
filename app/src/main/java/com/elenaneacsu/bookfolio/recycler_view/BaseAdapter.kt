@@ -33,6 +33,10 @@ abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>(context: Context) :
         _items.add(item)
     }
 
+    fun add(item: T, position: Int) {
+        _items.add(position, item)
+    }
+
     fun add(items: List<T>) {
         _items.clear()
         _items.addAll(items)

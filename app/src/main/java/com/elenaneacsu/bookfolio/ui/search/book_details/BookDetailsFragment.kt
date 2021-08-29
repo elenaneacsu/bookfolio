@@ -134,7 +134,8 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
                     val direction =
                         BookDetailsFragmentDirections.actionBookDetailsFragmentToJournalFragment(
                             it.data,
-                            bookDetailsMapper
+                            bookDetailsMapper,
+                            shelf
                         )
                     findNavController().navigate(direction)
                 }

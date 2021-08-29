@@ -5,6 +5,7 @@
 
     <data>
 
+<!--        <import type="com.elenaneacsu.bookfolio.utils.date.DateKt" />-->
         <import type="com.elenaneacsu.bookfolio.models.Quote" />
 
         <variable
@@ -99,6 +100,7 @@
                     tools:text="This is just a test since I cannot think\nOf anything right now\nOh wow look at me\nWriting modern poetry" />
 
                 <View
+                    android:id="@+id/text_separator"
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="@color/separator" />
@@ -136,7 +138,8 @@
                     android:id="@+id/title_separator"
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/separator" />
+                    android:background="@color/separator"
+                    android:visibility="gone" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -170,7 +173,8 @@
                     android:id="@+id/author_separator"
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/separator" />
+                    android:background="@color/separator"
+                    android:visibility="gone" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -191,7 +195,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/medium_margin"
-                        android:text="@{quote.page}"
+                        android:text="@{quote.page != null ? String.format(@string/page_number, quote.page) : @string/no_page_number_added}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/page_icon"
@@ -224,13 +228,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/medium_margin"
-                        android:text="@{quote.date}"
+                        android:text="@{quote.formattedDate}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/date_icon"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="May 21, 2021" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+                <!--                android:text="@{DateKt.toStringDate(quote.date)}"-->
 
                 <LinearLayout
                     android:id="@+id/buttons_layout_container"

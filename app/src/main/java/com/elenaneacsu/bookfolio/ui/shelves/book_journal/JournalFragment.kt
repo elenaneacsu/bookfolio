@@ -6,10 +6,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.provider.MediaStore
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
@@ -19,6 +21,8 @@ import com.elenaneacsu.bookfolio.databinding.FragmentFavouritesBinding
 import com.elenaneacsu.bookfolio.extensions.*
 import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.BookJournal
+import com.elenaneacsu.bookfolio.models.Quote
+import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.ui.MainActivity
 import com.elenaneacsu.bookfolio.ui.favourites.QuotesAdapter
 import com.elenaneacsu.bookfolio.utils.Constants
@@ -33,15 +37,17 @@ import java.io.File
 import java.io.IOException
 
 @AndroidEntryPoint
-class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBinding>(
-    R.layout.fragment_favourites, JournalViewModel::class.java
-) {
+class JournalFragment : QuotesAdapter.OnItemClickListener,
+    BaseMvvmFragment<JournalViewModel, FragmentFavouritesBinding>(
+        R.layout.fragment_favourites, JournalViewModel::class.java
+    ) {
 
     private var quotesAdapter: QuotesAdapter? = null
     private var currentPhotoFile: File? = null
-    private var alertDialog: AlertDialog? = null
-    private var dialogView: View? = null
+    private var addQuoteAlertDialog: AlertDialog? = null
+    private var addQuoteDialogView: View? = null
 
+    private var shelf: Shelf? = null
     private var book: BookDetailsMapper? = null
     private var journal: BookJournal? = null
 
@@ -59,21 +65,23 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val bundle = arguments ?: return
 
         val args = JournalFragmentArgs.fromBundle(bundle)
 
+        shelf = args.shelf
         book = args.book
         viewBinding.book = book
         journal = args.journal
+
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun initViews() {
         super.initViews()
 
         context?.let {
-            quotesAdapter = QuotesAdapter(it)
+            quotesAdapter = QuotesAdapter(it, this)
         }
 
         viewBinding.apply {
@@ -85,7 +93,15 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
                 title = activity?.getString(R.string.book_journal_title)
             }
 
+            pullToRefresh.setOnRefreshListener {
+                viewModel.getBookJournal(shelf, this@JournalFragment.book)
+            }
+
             quotesRecyclerView.adapter = quotesAdapter
+            journal?.quotes?.let { quotes ->
+                quotesAdapter?.add(quotes)
+                quotesAdapter?.notifyDataSetChanged()
+            }
 
             temporaryFab.setOnOneOffClickListener {
                 showDialogToAddQuote()
@@ -93,11 +109,71 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
         }
     }
 
-    override fun hideProgress() {
+    override fun initObservers() {
+        super.initObservers()
 
+        viewModel.addQuoteToJournalResult.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    hideProgress()
+                    it.data?.let { quote ->
+                        quotesAdapter?.addQuote(quote)
+                        quotesAdapter?.itemCount?.let { numberOfQuotes ->
+                            viewBinding.quotesRecyclerView.smoothScrollToPosition(numberOfQuotes - 1)
+                        }
+                    }
+                }
+                Result.Status.ERROR -> {
+                    hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
+
+        viewModel.bookJournalResult.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    it.data?.quotes?.let { quotes ->
+                        quotesAdapter?.add(quotes)
+                        quotesAdapter?.notifyDataSetChanged()
+                    }
+                    hideProgress()
+                }
+                Result.Status.ERROR -> {
+                    hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
+
+        viewModel.updateQuoteResult.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    it.data?.let { quotesPair ->
+                        quotesAdapter?.updateQuote(
+                            quotesPair.first,
+                            quotesPair.second
+                        )
+                    }
+                    hideProgress()
+                }
+                Result.Status.ERROR -> {
+                    hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
+    }
+
+    override fun hideProgress() {
+        viewBinding.pullToRefresh.isRefreshing = false
     }
 
     override fun showProgress() {
+        viewBinding.pullToRefresh.isRefreshing = true
     }
 
     override fun errorAlert(message: String) {
@@ -125,12 +201,29 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
                     recognizer.process(it)
                         .addOnSuccessListener { visionText ->
                             val text = processTextRecognitionResult(visionText)
-
+                            addQuoteDialogView?.findViewById<TextInputEditText>(R.id.quote)
+                                ?.setText(text)
                         }
                         .addOnFailureListener { e ->
                             logError(e.message, e)
                         }
                 } ?: logDebug("null la image")
+            }
+        }
+    }
+
+    override fun onPageIconClicked(quote: Quote) {
+        context?.let { ctx ->
+            val editText = EditText(ctx).apply { inputType = InputType.TYPE_CLASS_NUMBER }
+            ctx.alert(cancelable = true, style = R.style.AlertDialogStyle) {
+                setTitle("Add a page number")
+                setView(editText)
+                positiveButton("Save") {
+                    viewModel.updateQuoteData(shelf, book, quote, editText.text?.toString())
+                }
+                negativeButton("Cancel") {
+                    it.dismiss()
+                }
             }
         }
     }
@@ -158,35 +251,35 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
     private fun showDialogToAddQuote() {
         context?.let { ctx ->
 
-            alertDialog =
+            addQuoteAlertDialog =
                 ctx.createCustomDialog(cancelable = false, style = R.style.AlertDialogStyle) {
 
                     positiveButton("Save") {
                         val text =
-                            dialogView?.findViewById<TextInputEditText>(R.id.quote)?.text?.toString()
-                        if (text?.isNotEmpty() == true)
-                            book?.let { it1 -> viewModel.addQuoteToJournal(text, it1) }
+                            addQuoteDialogView?.findViewById<TextInputEditText>(R.id.quote)?.text?.toString()
+                        viewModel.addQuoteToJournal(shelf, book, text)
                     }
 
                     negativeButton("Cancel") {}
                 }
 
-            dialogView =
-                alertDialog!!.layoutInflater.inflate(R.layout.add_quote_dialog_layout, null)
-            alertDialog!!.setView(dialogView)
-            dialogView!!.findViewById<ImageView>(R.id.take_photo_icon)?.setOnOneOffClickListener {
-                requireContext().requestCameraPermission(object : PermissionsCallback {
-                    override fun onPermissionRequest(granted: Boolean) {
-                        if (granted) {
-                            dispatchTakePictureIntent()
-                        } else {
-                            toast("Permissions not granted by the user.")
+            addQuoteDialogView =
+                addQuoteAlertDialog!!.layoutInflater.inflate(R.layout.add_quote_dialog_layout, null)
+            addQuoteAlertDialog!!.setView(addQuoteDialogView)
+            addQuoteDialogView!!.findViewById<ImageView>(R.id.take_photo_icon)
+                ?.setOnOneOffClickListener {
+                    requireContext().requestCameraPermission(object : PermissionsCallback {
+                        override fun onPermissionRequest(granted: Boolean) {
+                            if (granted) {
+                                dispatchTakePictureIntent()
+                            } else {
+                                toast("Permissions not granted by the user.")
+                            }
                         }
-                    }
-                })
-            }
+                    })
+                }
 
-            alertDialog!!.show()
+            addQuoteAlertDialog!!.show()
         }
     }
 
@@ -214,11 +307,6 @@ class JournalFragment : BaseMvvmFragment<JournalViewModel, FragmentFavouritesBin
                 }
             }
         }
-    }
-
-    private fun manageDialogAfterTextRecognition(text: String) {
-        dialogView?.findViewById<TextInputEditText>(R.id.quote)?.setText(text)
-        dialogView
     }
 
     companion object {

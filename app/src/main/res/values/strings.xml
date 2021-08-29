@@ -19,6 +19,7 @@
     <string name="invalid_email">Please provide a valid email</string>
     <string name="permission_denied">Permission denied</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="empty_quote">Your quote is empty. Please provide some text.</string>
 
     <!-- Bottom Navigation Items -->
     <string name="shelves">Shelves</string>
@@ -42,6 +43,9 @@
     <!-- Book journal region -->
     <string name="book_journal_title">My book journal</string>
     <string name="book_journal_error">Your book journal cannot be retrieved right now. Please try again later.</string>
+    <string name="no_page_number_added">Type on the icon to add the page number of this quote</string>
+    <string name="no_page_number_provided">You must provide a page number!</string>
+    <string name="page_number">page %1$s</string>
 
     <!-- Quotes region -->
     <string name="edit">Edit</string>
@@ -56,7 +60,5 @@
     <string name="detele_account">Detele account</string>
     <string name="edit_name">Edit name</string>
     <string name="or">or</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

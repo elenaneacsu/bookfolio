@@ -60,6 +60,7 @@ abstract class BaseMvvmFragment<VM : BaseViewModel, VB : ViewDataBinding>(
     open fun initObservers() {
         viewModel.error.observe(viewLifecycleOwner, { message ->
             message?.let {
+                hideProgress()
                 errorAlert(it)
                 viewModel.setError(null)
             }

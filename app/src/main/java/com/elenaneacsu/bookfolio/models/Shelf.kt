@@ -22,3 +22,9 @@ enum class ShelfType(val valueAsString: String) {
         fun getShelfType(value: String) = values().firstOrNull { it.valueAsString == value }
     }
 }
+
+fun Shelf.getShelfTypeName() = name?.let { shelfName ->
+    ShelfType.getShelfType(
+        shelfName
+    )?.valueAsString
+}

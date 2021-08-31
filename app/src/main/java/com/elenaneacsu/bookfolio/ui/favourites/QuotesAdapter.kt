@@ -44,6 +44,16 @@ class QuotesAdapter(
         itemClickListener.onDateIconClicked(quote)
     }
 
+    override fun onQuoteAddedToOrRemovedFromFavourites(position: Int) {
+        val quote = _items[position]
+        itemClickListener.onFavouritesIconClicked(quote)
+    }
+
+    override fun onQuoteRemoved(position: Int) {
+        val quote = _items[position]
+        itemClickListener.onRemoveQuoteClicked(quote)
+    }
+
     fun addQuote(quote: Quote) {
         add(quote)
         notifyItemInserted(_items.size - 1)
@@ -54,17 +64,22 @@ class QuotesAdapter(
         //the date is updated
         if (quote.date != updatedQuote.date) {
             _items.sortBy { it.date }
-            notifyDataSetChanged()
-        } else {
-            //other quote data is updated
-            notifyItemChanged(_items.indexOf(updatedQuote))
-            notifyItemRangeChanged(0, _items.size)
         }
+        notifyDataSetChanged()
+    }
+
+    fun removeQuote(quote: Quote) {
+        val position = _items.indexOf(quote)
+        _items.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, _items.size - 1)
     }
 
     interface OnItemClickListener {
         fun onQuoteFullTextClicked(quote: Quote)
         fun onPageIconClicked(quote: Quote)
         fun onDateIconClicked(quote: Quote)
+        fun onFavouritesIconClicked(quote: Quote) {}
+        fun onRemoveQuoteClicked(quote: Quote)
     }
 }

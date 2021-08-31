@@ -5,7 +5,6 @@
 
     <data>
 
-<!--        <import type="com.elenaneacsu.bookfolio.utils.date.DateKt" />-->
         <import type="com.elenaneacsu.bookfolio.models.Quote" />
 
         <variable

@@ -26,6 +26,8 @@ class JournalViewModel @Inject constructor(
 ) : BaseViewModel(
     resourceString, coroutineContextProvider
 ) {
+    val favouriteQuotes = repository.getFavouriteQuotes()
+
     private val _addQuoteToJournalResult = MutableLiveData<Result<Quote>>()
     val addQuoteToJournalResult: LiveData<Result<Quote>>
         get() = _addQuoteToJournalResult
@@ -34,11 +36,19 @@ class JournalViewModel @Inject constructor(
     val bookJournalResult: LiveData<Result<BookJournal>>
         get() = _bookJournalResult
 
-    private val _updateQuoteResult = MutableLiveData<Result<Pair<Quote, Quote>>>()
+    private val _updateQuoteResult = SingleLiveEvent<Result<Pair<Quote, Quote>>>()
     val updateQuoteResult: LiveData<Result<Pair<Quote, Quote>>>
         get() = _updateQuoteResult
 
-    fun addQuoteToJournal(shelf: Shelf?, book: BookDetailsMapper?, text: String?) =
+    private val _removeQuoteResult = MutableLiveData<Result<Quote>>()
+    val removeQuoteResult: LiveData<Result<Quote>>
+        get() = _removeQuoteResult
+
+    private val _favouriteQuoteResult = SingleLiveEvent<Result<Pair<Quote, Quote>>>()
+    val favouriteQuoteResult: LiveData<Result<Pair<Quote, Quote>>>
+        get() = _favouriteQuoteResult
+
+    fun addQuoteToJournal(shelf: Shelf? = null, book: BookDetailsMapper? = null, text: String?) =
         makeRequest(resourceString, ioContext, _addQuoteToJournalResult) {
             if (shelf == null || book == null) {
                 setError(resourceString.getString(R.string.default_error_message))
@@ -66,14 +76,18 @@ class JournalViewModel @Inject constructor(
         }
 
     fun updateQuoteData(
-        shelf: Shelf?,
-        book: BookDetailsMapper?,
+        shelf: Shelf? = null,
+        book: BookDetailsMapper? = null,
         quote: Quote,
         key: QuoteKey,
         value: Any?
     ) =
         makeRequest(resourceString, ioContext, _updateQuoteResult) {
-            if (shelf == null || book == null || value == null) {
+            val dbQuote = favouriteQuotes.value?.first { it.id == quote.id }
+            val shelfTypeName = shelf?.getShelfTypeName() ?: dbQuote?.shelfName
+            val bookId = book?.getId() ?: dbQuote?.bookId
+
+            if (value == null || shelfTypeName == null || bookId == null) {
                 setError(resourceString.getString(R.string.default_error_message))
             } else if (key == QuoteKey.PAGE && (value as? String).isNullOrEmpty()) {
                 setError(resourceString.getString(R.string.no_page_number_provided))
@@ -82,7 +96,10 @@ class JournalViewModel @Inject constructor(
             } else {
                 _updateQuoteResult.postValue(Result.loading())
 
-                repository.updateQuoteData(shelf, book, quote.id, key.valueAsString, value)
+                repository.updateQuoteData(
+                    shelfTypeName,
+                    bookId, quote.id, key.valueAsString, value
+                )
 
                 repository.quote = when (key) {
                     QuoteKey.PAGE -> quote.copy(page = value as String)
@@ -90,8 +107,72 @@ class JournalViewModel @Inject constructor(
                     else -> quote.copy(text = value as String)
                 }
 
+                if (quote.isFavourite) {
+                    repository.addQuoteToFavourites(
+                        shelfTypeName,
+                        bookId, repository.quote
+                    )
+                }
+
                 //emit the old quote in order to find it in the adapter's list
                 _updateQuoteResult.postValue(Result.success(Pair(quote, repository.quote)))
             }
         }
+
+    fun removeQuote(
+        shelf: Shelf?,
+        book: BookDetailsMapper?,
+        quote: Quote
+    ) = makeRequest(resourceString, ioContext, _removeQuoteResult) {
+        val shelfTypeName = shelf?.getShelfTypeName()
+        val bookId = book?.getId()
+        if (shelf == null || book == null || shelfTypeName == null || bookId == null) {
+            setError(resourceString.getString(R.string.default_error_message))
+        } else {
+            _removeQuoteResult.postValue(Result.loading())
+
+            repository.removeQuote(shelfTypeName, bookId, quote.id)
+
+            _removeQuoteResult.postValue(Result.success(quote))
+        }
+    }
+
+    fun addQuoteToFavourites(shelf: Shelf?, book: BookDetailsMapper?, quote: Quote) =
+        makeRequest(resourceString, ioContext, _favouriteQuoteResult) {
+            val shelfTypeName = shelf?.getShelfTypeName()
+            val bookId = book?.getId()
+            if (shelf == null || book == null || shelfTypeName == null || bookId == null) {
+                setError(resourceString.getString(R.string.default_error_message))
+            } else {
+                _favouriteQuoteResult.postValue(Result.loading())
+
+                repository.processAddQuoteToFavourites(shelfTypeName, bookId, quote)
+
+                val favouriteQuote = quote.copy(isFavourite = true)
+                _favouriteQuoteResult.postValue(Result.success(Pair(quote, favouriteQuote)))
+            }
+        }
+
+    fun removeQuoteFromFavourites(
+        shelf: Shelf? = null,
+        book: BookDetailsMapper? = null,
+        quote: Quote
+    ) =
+        makeRequest(resourceString, ioContext, _favouriteQuoteResult) {
+            val dbQuote = favouriteQuotes.value?.first { it.id == quote.id }
+            val shelfTypeName = shelf?.getShelfTypeName() ?: dbQuote?.shelfName
+            val bookId = book?.getId() ?: dbQuote?.bookId
+
+            if (shelfTypeName == null || bookId == null) {
+                setError(resourceString.getString(R.string.default_error_message))
+            } else {
+                _favouriteQuoteResult.postValue(Result.loading())
+
+                repository.processRemoveQuoteFromFavourites(shelfTypeName, bookId, quote)
+
+                val favouriteQuote = quote.copy(isFavourite = false)
+                _favouriteQuoteResult.postValue(Result.success(Pair(quote, favouriteQuote)))
+            }
+        }
+
 }

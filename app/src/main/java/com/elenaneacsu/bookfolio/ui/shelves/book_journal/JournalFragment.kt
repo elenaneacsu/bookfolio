@@ -148,6 +148,7 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
             when (it.status) {
                 Result.Status.LOADING -> showProgress()
                 Result.Status.SUCCESS -> {
+                    hideProgress()
                     it.data?.let { quotesPair ->
                         quotesAdapter?.updateQuote(
                             quotesPair.first,
@@ -155,7 +156,46 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
                         )
                     }
                     toast("Quote updated successfully.")
+                }
+                Result.Status.ERROR -> {
                     hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
+
+        viewModel.removeQuoteResult.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    hideProgress()
+                    it.data?.let { quote ->
+                        activity?.getString(R.string.removed_quote_success)?.let { message ->
+                            successAlert(
+                                message
+                            )
+                        }
+                        quotesAdapter?.removeQuote(quote)
+                    }
+                }
+                Result.Status.ERROR -> {
+                    hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
+
+        viewModel.favouriteQuoteResult.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    hideProgress()
+                    it.data?.let { quotesPair ->
+                        quotesAdapter?.updateQuote(
+                            quotesPair.first,
+                            quotesPair.second
+                        )
+                    }
                 }
                 Result.Status.ERROR -> {
                     hideProgress()
@@ -241,6 +281,39 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
         }, {
             viewModel.updateQuoteData(shelf, book, quote, QuoteKey.DATE, it)
         })
+    }
+
+    override fun onFavouritesIconClicked(quote: Quote) {
+        context?.let { ctx ->
+            ctx.alert(cancelable = true, style = R.style.AlertDialogStyle) {
+                setTitle(if (quote.isFavourite) "Unlike quote" else "Like quote")
+                setMessage(if (quote.isFavourite) "Are you sure you want to unlike this quote?" else "Are you sure you want to add this quote to favourites?")
+                positiveButton {
+                    if (quote.isFavourite)
+                        viewModel.removeQuoteFromFavourites(shelf, book, quote)
+                    else
+                        viewModel.addQuoteToFavourites(shelf, book, quote)
+                }
+                negativeButton("Cancel") {
+                    it.dismiss()
+                }
+            }
+        }
+    }
+
+    override fun onRemoveQuoteClicked(quote: Quote) {
+        context?.let { ctx ->
+            ctx.alert(cancelable = true, style = R.style.AlertDialogStyle) {
+                setTitle("Remove quote")
+                setMessage("Are you sure you want to remove this quote?")
+                positiveButton {
+                    viewModel.removeQuote(shelf, book, quote)
+                }
+                negativeButton("Cancel") {
+                    it.dismiss()
+                }
+            }
+        }
     }
 
     private fun processTextRecognitionResult(texts: Text): String {

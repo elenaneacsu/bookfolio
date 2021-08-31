@@ -1,13 +1,16 @@
 package com.elenaneacsu.bookfolio.di
 
+import android.content.Context
 import com.elenaneacsu.bookfolio.BuildConfig
 import com.elenaneacsu.bookfolio.networking.ApiKeyInterceptor
 import com.elenaneacsu.bookfolio.networking.BooksService
 import com.elenaneacsu.bookfolio.networking.IRetrofitRequests
+import com.elenaneacsu.bookfolio.room.QuotesDatabase
 import com.elenaneacsu.bookfolio.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -56,5 +59,14 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRetrofitRequests(retrofitRequests: IRetrofitRequests) = retrofitRequests
+
+    @Singleton
+    @Provides
+    fun provideDatabase(@ApplicationContext appContext: Context) =
+        QuotesDatabase.getDatabase(appContext)
+
+    @Singleton
+    @Provides
+    fun provideQuoteDao(database: QuotesDatabase) = database.quoteDao()
 
 }

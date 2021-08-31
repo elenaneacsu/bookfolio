@@ -46,10 +46,12 @@
     <string name="no_page_number_added">Type on the icon to add the page number of this quote</string>
     <string name="no_page_number_provided">You must provide a page number!</string>
     <string name="page_number">page %1$s</string>
+    <string name="removed_quote_success">You have successfully removed this quote from your journal!</string>
 
     <!-- Quotes region -->
     <string name="edit">Edit</string>
     <string name="remove">Remove</string>
+    <string name="removed_quote_from_favourites_success">You have successfully removed this quote from your favourites!</string>
 
     <!-- Search region -->
     <string name="search_hint">Search title, author or ISBN</string>

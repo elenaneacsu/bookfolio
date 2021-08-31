@@ -1,5 +1,6 @@
 package com.elenaneacsu.bookfolio.ui.favourites
 
+import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FavouriteQuoteLayoutBinding
 import com.elenaneacsu.bookfolio.models.Quote
 import com.elenaneacsu.bookfolio.recycler_view.BaseViewHolder
@@ -15,6 +16,8 @@ class QuoteViewHolder(
         itemBinding.apply {
             quote = item
 
+            iconQuote.setImageResource(if (item.isFavourite) R.drawable.ic_favorite_24dp else R.drawable.ic_navigation_quotes_24dp)
+
             quoteFull.setOnOneOffClickListener {
                 itemClickListener.onTextChanged(adapterPosition)
             }
@@ -26,6 +29,14 @@ class QuoteViewHolder(
             dateIcon.setOnOneOffClickListener {
                 itemClickListener.onDateChanged(adapterPosition)
             }
+
+            addToFavourite.setOnOneOffClickListener {
+                itemClickListener.onQuoteAddedToOrRemovedFromFavourites(adapterPosition)
+            }
+
+            removeQuote.setOnOneOffClickListener {
+                itemClickListener.onQuoteRemoved(adapterPosition)
+            }
         }
         itemBinding.executePendingBindings()
     }
@@ -34,5 +45,7 @@ class QuoteViewHolder(
         fun onTextChanged(position: Int)
         fun onPageNumberChanged(position: Int)
         fun onDateChanged(position: Int)
+        fun onQuoteAddedToOrRemovedFromFavourites(position: Int)
+        fun onQuoteRemoved(position: Int)
     }
 }

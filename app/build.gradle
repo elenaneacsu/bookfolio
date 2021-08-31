@@ -85,7 +85,6 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
 // CameraX View class
     implementation "androidx.camera:camera-view:1.0.0-alpha28"
-//    implementation 'com.google.mlkit:text-recognition:16.0.0-beta1'
 
     implementation "com.karumi:dexter:6.2.1"
     // Glide
@@ -136,7 +135,7 @@ dependencies {
     // Room
 
     implementation Deps.roomRuntime
-    implementation Deps.roomCompiler
+    kapt Deps.roomCompiler
     implementation Deps.roomKtx
     implementation Deps.roomTesting
 

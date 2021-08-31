@@ -58,7 +58,7 @@ class BookAdapter(
         val position = _items.indexOf(book)
         _items.removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, _items.size)
+        notifyItemRangeChanged(position, _items.size - 1)
     }
 
     interface OnItemClickListener {

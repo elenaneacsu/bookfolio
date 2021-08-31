@@ -16,7 +16,8 @@ data class Quote(
     var author: String? = null,
     var page: String? = null,
     var date: Long? = null,
-    var isFavourite: Boolean = false
+    var isFavourite: Boolean = false,
+    var isCurrentlyDisplayedInFavourites: Boolean = false,
 ) : Parcelable {
     fun getFormattedDate() = date?.toStringDate()
 }

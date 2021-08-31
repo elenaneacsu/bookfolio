@@ -326,10 +326,7 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
         for (i in blocks.indices) {
             val lines: List<Text.Line> = blocks[i].lines
             for (line in lines) {
-                if (lines.indexOf(line) == lines.size - 1)
-                    textResult.append(line.text)
-                else
-                    textResult.append(line.text + "\n")
+                textResult.append(line.text + "\n")
             }
         }
         return textResult.toString()

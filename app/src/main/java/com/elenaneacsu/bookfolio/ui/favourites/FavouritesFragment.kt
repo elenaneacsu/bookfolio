@@ -88,7 +88,8 @@ class FavouritesFragment : QuotesAdapter.OnItemClickListener,
                     dbQuote.author,
                     dbQuote.page,
                     dbQuote.date,
-                    true
+                    isFavourite = true,
+                    isCurrentlyDisplayedInFavourites = true
                 )
             })
             quotesAdapter?.notifyDataSetChanged()

@@ -1,5 +1,6 @@
 package com.elenaneacsu.bookfolio.ui.favourites
 
+import android.view.View
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FavouriteQuoteLayoutBinding
 import com.elenaneacsu.bookfolio.models.Quote
@@ -17,6 +18,20 @@ class QuoteViewHolder(
             quote = item
 
             iconQuote.setImageResource(if (item.isFavourite) R.drawable.ic_favorite_24dp else R.drawable.ic_navigation_quotes_24dp)
+
+            if (item.isCurrentlyDisplayedInFavourites) {
+                addToFavourite.visibility = View.GONE
+                titleLayout.visibility = View.VISIBLE
+                titleSeparator.visibility = View.VISIBLE
+                authorLayout.visibility = View.VISIBLE
+                authorSeparator.visibility = View.VISIBLE
+            } else {
+                addToFavourite.visibility = View.VISIBLE
+                titleLayout.visibility = View.GONE
+                titleSeparator.visibility = View.GONE
+                authorLayout.visibility = View.GONE
+                authorSeparator.visibility = View.GONE
+            }
 
             quoteFull.setOnOneOffClickListener {
                 itemClickListener.onTextChanged(adapterPosition)

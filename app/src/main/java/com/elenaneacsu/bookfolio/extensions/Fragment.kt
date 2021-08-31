@@ -7,10 +7,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.elenaneacsu.bookfolio.R
-import com.elenaneacsu.bookfolio.ui.search.book_details.ShelfOptionsAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.*
@@ -70,6 +67,7 @@ fun Fragment.createBottomSheetDialog(view: View,
 
 fun Fragment.showMaterialDatePicker(
     isConstrained: Boolean = false,
+    selectionDate: Long? = null,
     onCancelListener: DialogInterface.OnCancelListener,
     onPositiveButtonClickListener: MaterialPickerOnPositiveButtonClickListener<Long>,
 ) {
@@ -92,6 +90,11 @@ fun Fragment.showMaterialDatePicker(
                         .setValidator(validators)
                         .build()
                 )
+                .build()
+        } else if (selectionDate != null) {
+            MaterialDatePicker.Builder
+                .datePicker()
+                .setSelection(selectionDate)
                 .build()
         } else {
             val today = Calendar.getInstance()

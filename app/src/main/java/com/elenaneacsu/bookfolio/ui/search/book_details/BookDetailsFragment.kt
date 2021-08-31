@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentBookDetailsBinding
-import com.elenaneacsu.bookfolio.extensions.*
+import com.elenaneacsu.bookfolio.extensions.Result
+import com.elenaneacsu.bookfolio.extensions.createBottomSheetDialog
+import com.elenaneacsu.bookfolio.extensions.toast
+import com.elenaneacsu.bookfolio.extensions.updateStatusBarColor
 import com.elenaneacsu.bookfolio.models.BookDetailsMapper
 import com.elenaneacsu.bookfolio.models.Shelf
 import com.elenaneacsu.bookfolio.ui.MainActivity
-import com.elenaneacsu.bookfolio.utils.date.toStringDate
 import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -47,7 +49,6 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val bundle = arguments ?: return
 
         val args = BookDetailsFragmentArgs.fromBundle(bundle)
@@ -55,6 +56,8 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
         bookDetailsMapper = args.book
         viewBinding.book = bookDetailsMapper
         shelf = args.shelf
+
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun initViews() {
@@ -65,23 +68,11 @@ class BookDetailsFragment : ShelfOptionsAdapter.OnItemClickListener,
                 (activity as? MainActivity)?.onSupportNavigateUp()
             }
 
+            fabShelves.visibility =
+                if (bookDetailsMapper?.userBook != null) View.GONE else View.VISIBLE
+
             fabShelves.setOnOneOffClickListener {
                 viewModel.getShelves()
-            }
-
-            startDateIcon.setOnOneOffClickListener {
-                showMaterialDatePicker(false, {
-                    it.dismiss()
-                }, {
-                    val formattedDate = it.toStringDate()
-                    startDate.text = formattedDate
-                })
-            }
-
-            endDateIcon.setOnOneOffClickListener {
-                showMaterialDatePicker(false, { it.dismiss() }, {
-                    endDate.text = it.toStringDate()
-                })
             }
 
             journalButton.setOnOneOffClickListener {

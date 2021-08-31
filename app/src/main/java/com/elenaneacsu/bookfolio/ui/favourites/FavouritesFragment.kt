@@ -192,7 +192,7 @@ class FavouritesFragment : QuotesAdapter.OnItemClickListener,
         context?.let { ctx ->
 
             addQuoteAlertDialog =
-                ctx.createCustomDialog(cancelable = false, style = R.style.AlertDialogStyle) {
+                ctx.createCustomDialog(cancelable = true, style = R.style.AlertDialogStyle) {
 
                     positiveButton("Save") {
                         val text =
@@ -239,7 +239,7 @@ class FavouritesFragment : QuotesAdapter.OnItemClickListener,
     }
 
     override fun onDateIconClicked(quote: Quote) {
-        showMaterialDatePicker(false, {
+        showMaterialDatePicker(false, quote.date, {
             it.dismiss()
         }, {
             viewModel.updateQuoteData(quote = quote, key = QuoteKey.DATE, value = it)

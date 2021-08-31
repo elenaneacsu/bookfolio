@@ -62,5 +62,6 @@
     <string name="detele_account">Detele account</string>
     <string name="edit_name">Edit name</string>
     <string name="or">or</string>
+    <string name="not_name">Not %1$s?</string>
 
 </resources>

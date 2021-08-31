@@ -86,8 +86,13 @@ class JournalRepository @Inject constructor(private val quoteDao: QuoteDao) : Ba
 
     fun getFavouriteQuotes() = quoteDao.getAllQuotes()
 
+    suspend fun updateFavouriteQuote(quote: QuoteRoomEntity) {
+        quoteDao.updateQuote(quote)
+    }
+
     private suspend fun removeQuoteFromFavourites(quote: Quote) {
         quoteDao.deleteQuote(quote.id)
     }
+
 
 }

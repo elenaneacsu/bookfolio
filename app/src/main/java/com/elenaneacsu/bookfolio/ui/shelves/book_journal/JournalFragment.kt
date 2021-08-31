@@ -276,7 +276,7 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
     }
 
     override fun onDateIconClicked(quote: Quote) {
-        showMaterialDatePicker(false, {
+        showMaterialDatePicker(false, quote.date, {
             it.dismiss()
         }, {
             viewModel.updateQuoteData(shelf, book, quote, QuoteKey.DATE, it)
@@ -339,7 +339,7 @@ class JournalFragment : QuotesAdapter.OnItemClickListener,
         context?.let { ctx ->
 
             addQuoteAlertDialog =
-                ctx.createCustomDialog(cancelable = false, style = R.style.AlertDialogStyle) {
+                ctx.createCustomDialog(cancelable = true, style = R.style.AlertDialogStyle) {
 
                     positiveButton("Save") {
                         val text =

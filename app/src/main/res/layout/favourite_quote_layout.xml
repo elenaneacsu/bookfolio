@@ -106,8 +106,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/book_icon"
@@ -137,13 +136,11 @@
                     android:id="@+id/title_separator"
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/separator"
-                    android:visibility="gone" />
+                    android:background="@color/separator" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/author_icon"
@@ -172,8 +169,7 @@
                     android:id="@+id/author_separator"
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/separator"
-                    android:visibility="gone" />
+                    android:background="@color/separator" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

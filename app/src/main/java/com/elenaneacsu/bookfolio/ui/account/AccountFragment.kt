@@ -1,10 +1,10 @@
 package com.elenaneacsu.bookfolio.ui.account
 
-import androidx.appcompat.app.AppCompatActivity
+import android.text.InputType
+import android.widget.EditText
 import com.elenaneacsu.bookfolio.R
 import com.elenaneacsu.bookfolio.databinding.FragmentAccountBinding
 import com.elenaneacsu.bookfolio.extensions.*
-import com.elenaneacsu.bookfolio.ui.SplashActivity
 import com.elenaneacsu.bookfolio.ui.auth.AuthActivity
 import com.elenaneacsu.bookfolio.utils.setOnOneOffClickListener
 import com.elenaneacsu.bookfolio.view.fragment.BaseMvvmFragment
@@ -21,13 +21,37 @@ class AccountFragment : BaseMvvmFragment<AccountViewModel, FragmentAccountBindin
     override fun initViews() {
         super.initViews()
 
-        viewBinding.logOut.setOnClickListener {
-            showLogOutDialog()
-        }
+        viewModel.getUserDetails()
 
-        viewBinding.deleteAccount.setOnOneOffClickListener {
-            (activity as? AppCompatActivity)?.startActivityNormal(SplashActivity::class.java)
+        viewBinding.apply {
+            logOut.setOnClickListener {
+                showLogOutDialog()
+            }
+
+            editName.setOnOneOffClickListener {
+                showEditNameDialog()
+            }
+
+            deleteAccount.setOnOneOffClickListener {
+                showDeleteAccountDialog()
+            }
         }
+    }
+
+    override fun initObservers() {
+        viewModel.userDataResult.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Result.Status.LOADING -> showProgress()
+                Result.Status.SUCCESS -> {
+                    hideProgress()
+                    viewBinding.user = it.data
+                }
+                Result.Status.ERROR -> {
+                    hideProgress()
+                    errorAlert(it.message ?: getString(R.string.default_error_message))
+                }
+            }
+        })
     }
 
     override fun hideProgress() {
@@ -50,6 +74,43 @@ class AccountFragment : BaseMvvmFragment<AccountViewModel, FragmentAccountBindin
                 positiveButton {
                     viewModel.signOut()
                     activity?.startActivityWithFlags(AuthActivity::class.java)
+                }
+                negativeButton("Cancel") {
+                    it.dismiss()
+                }
+            }
+        }
+    }
+
+    private fun showDeleteAccountDialog() {
+        context?.let { ctx ->
+            ctx.alert(cancelable = true, style = R.style.AlertDialogStyle) {
+                setTitle("Delete account")
+                setMessage("Are you sure you want to delete your Bookfolio account?\nThis is a permanent action that cannot be undone.")
+                positiveButton("Yes, delete it") {
+                    viewModel.signOut()
+                    activity?.startActivityWithFlags(AuthActivity::class.java)
+                }
+                negativeButton("Cancel") {
+                    it.dismiss()
+                }
+            }
+        }
+    }
+
+    private fun showEditNameDialog() {
+        context?.let { ctx ->
+            val editText = EditText(ctx).apply {
+                inputType = InputType.TYPE_CLASS_TEXT
+                setText(viewModel.getName())
+            }
+            ctx.alert(cancelable = true, style = R.style.AlertDialogStyle) {
+                setTitle("Type your name...")
+                setView(editText)
+                positiveButton("Save") {
+                    viewModel.updateUserName(
+                        editText.text?.toString()
+                    )
                 }
                 negativeButton("Cancel") {
                     it.dismiss()

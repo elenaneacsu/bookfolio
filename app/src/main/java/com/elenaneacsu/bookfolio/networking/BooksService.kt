@@ -15,7 +15,7 @@ interface BooksService {
     @GET("volumes")
     suspend fun getVolumes(
         @Query("q") searchQuery: String,
-        @Query("maxResults") maxResults: Int = 15,
+        @Query("maxResults") maxResults: Int = 40,
         @Query("fields") fields: String = Constants.PARTIAL_SEARCH_QUERY_FIELDS
     ): SearchResponse
 

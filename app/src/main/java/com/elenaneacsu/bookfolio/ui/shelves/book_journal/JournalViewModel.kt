@@ -108,9 +108,17 @@ class JournalViewModel @Inject constructor(
                 }
 
                 if (quote.isFavourite) {
-                    repository.addQuoteToFavourites(
-                        shelfTypeName,
-                        bookId, repository.quote
+                    repository.updateFavouriteQuote(
+                        QuoteRoomEntity(
+                            id = repository.quote.id,
+                            text = repository.quote.text,
+                            book = repository.quote.book,
+                            author = repository.quote.author,
+                            page = repository.quote.page,
+                            date = repository.quote.date,
+                            shelfName = shelfTypeName,
+                            bookId = bookId
+                        )
                     )
                 }
 
